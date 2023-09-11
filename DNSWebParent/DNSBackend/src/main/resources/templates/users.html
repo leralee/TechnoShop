@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+      lang="en">
 
 <head th:replace="~{fragments :: page_head('Главная страница', 'none')}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
@@ -86,13 +86,21 @@
             <tbody>
                 <tr th:each="user: ${listUsers}">
                     <td>[[${user.id}]]</td>
-                    <td></td>
+                    <td><span class="fas fa-portrait fa-3x icon-silver"></span></td>
                     <td>[[${user.email}]]</td>
                     <td>[[${user.firstName}]]</td>
                     <td>[[${user.lastName}]]</td>
                     <td>[[${user.roles}]]</td>
-                    <td>[[${user.enabled}]]</td>
-                    <td>Edit &nbsp; Delete </td>
+                    <td>
+                        <a th:if="${user.enabled == true}" href="#"><i class="fa-solid fa-check-circle fa-2x icon-green"></i></a>
+                        <a th:if="${user.enabled == false}" href="#"><i class="fa-solid fa-check-circle fa-2x icon-dark"></i></a>
+                    </td>
+                    <td>
+                        <a href="#"><i class="fa-solid fa-pen-to-square fa-2x icon-green"></i></a>
+                        &nbsp;
+                        <a href="#"><i class="fa-solid fa-trash fa-2x icon-dark"></i></a>
+
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -128,7 +136,7 @@
 
 <!--        <h1>[[${productCount}]]</h1>-->
 <!--    </div>-->
-<!--<main>fklnesfnesifvnesdvfsfvffffffffffffffffffffffffffffffffffffffffffffffffffsefsfsfsf</main>-->
+
 
 
 

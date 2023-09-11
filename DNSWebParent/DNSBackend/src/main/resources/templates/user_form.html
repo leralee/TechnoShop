@@ -69,38 +69,38 @@
         th:object="${user}" onsubmit="return checkEmailUnique(this)">
         <div class="border border-secondary rounded p-3">
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Почта:</label>
+                <label for="email" class="col-sm-4 col-form-label">Почта:</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" th:field="*{email}" required minlength="8" maxlength="128" />
+                    <input type="email" id="email" class="form-control" th:field="*{email}" required minlength="8" maxlength="128" />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Имя:</label>
+                <label for="firstName" class="col-sm-4 col-form-label">Имя:</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="45" />
+                    <input type="text" id="firstName" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="45" />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Фамилия:</label>
+                <label for="lastName" class="col-sm-4 col-form-label">Фамилия:</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" th:field="*{lastName}" required minlength="2" maxlength="45" />
+                    <input type="text" id="lastName" class="form-control" th:field="*{lastName}" required minlength="2" maxlength="45" />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Пароль:</label>
+                <label for="password" class="col-sm-4 col-form-label">Пароль:</label>
                 <div class="col-sm-8">
-                    <input type="password" class="form-control" th:field="*{password}" required minlength="8" maxlength="20" />
+                    <input type="password" id="password" class="form-control" th:field="*{password}" required minlength="8" maxlength="20" />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Назначения:</label>
+                <label for="roles" class="col-sm-4 col-form-label">Назначения:</label>
                 <div class="col-sm-8">
                     <th:block th:each="role : ${listRoles}">
-                        <input type="checkbox" th:field="*{roles}"
+                        <input id="roles" type="checkbox" th:field="*{roles}"
                                th:text="${role.name}" th:value="${role.id}" class="m-2" />
                         - <small>[[${role.description}]]</small>
                         <br/>
@@ -109,9 +109,9 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 col-form-label">Доступ:</label>
+                <label for="enabled" class="col-sm-4 col-form-label">Доступ:</label>
                 <div class="col-sm-8">
-                    <input type="checkbox" th:field="*{enabled}">
+                    <input type="checkbox" id="enabled" th:field="*{enabled}">
                 </div>
             </div>
 
@@ -127,7 +127,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="modalTitle">Предупреждение</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <span id="modalBody"></span>
@@ -153,7 +153,7 @@
     });
 
     function checkEmailUnique(form) {
-        let url = "[[@{/users/check_email2222}]]";
+        let url = "[[@{/users/check_email}]]";
         let userEmail = $("#email").val();
         let csrfValue = $("input[name='_csrf']").val();
         let params = {email: userEmail, _csrf: csrfValue};
@@ -174,8 +174,8 @@
     function showModalDialog(title, message) {
         $("#modalTitle").text(title);
         $("#modalBody").text(message);
-        var myModal = new bootstrap.Modal(document.getElementById('modalDialog'), {});
-        myModal.show();
+        const myModal = new bootstrap.Modal(document.getElementById('modalDialog'));
+        myModal.show(this);
     }
 </script>
 </body>
