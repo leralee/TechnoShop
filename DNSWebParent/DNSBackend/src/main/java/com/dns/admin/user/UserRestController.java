@@ -1,6 +1,5 @@
 package com.dns.admin.user;
 
-import com.dns.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,7 @@ public class UserRestController {
     }
 
     @PostMapping("/users/check_email")
-    public String checkDuplicateEmail(@Param("email") String email) {
-        return service.isEmailUnique(email) ? "OK" : "Duplicated";
+    public String checkDuplicateEmail(@Param("id") Integer id, @Param("email") String email) {
+        return service.isEmailUnique(id, email) ? "OK" : "Duplicated";
     }
 }

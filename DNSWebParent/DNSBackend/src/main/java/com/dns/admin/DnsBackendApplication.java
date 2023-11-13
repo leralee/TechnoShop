@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @SpringBootApplication
 @EntityScan({"com.dns.common.entity", "com.dns.admin.user"})
 public class DnsBackendApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(DnsBackendApplication.class, args);
 	}

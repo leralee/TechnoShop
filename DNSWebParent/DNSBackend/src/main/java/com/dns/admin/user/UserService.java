@@ -1,16 +1,19 @@
 package com.dns.admin.user;
 
-import com.dns.admin.security.WebSecurityConfig;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * @author valeriali on {02.09.2023}
@@ -18,13 +21,13 @@ import java.util.List;
  */
 
 @Service
+@Transactional
 public class UserService {
 
+    public static final int USERS_PER_PAGE = 4;
     private final UserRepository userRepo;
     private final RoleRepository roleRepo;
     private final PasswordEncoder passwordEncoder;
-
-
 
     @Autowired
     UserService(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder passwordEncoder) {
@@ -34,16 +37,31 @@ public class UserService {
     }
 
     public List<User> listAll() {
-        return (List<User>) userRepo.findAll();
+        return userRepo.findAll();
+    }
+
+    public Page<User> listByPage(int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum - 1, USERS_PER_PAGE);
+        return userRepo.findAll(pageable);
     }
 
     public List<Role> listRoles() {
         return (List<Role>) roleRepo.findAll();
     }
 
-    public void save(User user) {
-        encodePassword(user);
-        userRepo.save(user);
+    public User save(User user) {
+        boolean isUpdatingUser = (user.getId() != null);
+        if (isUpdatingUser) {
+            User existingUser = userRepo.findById(user.getId()).get();
+            if (user.getPassword().isEmpty()) {
+                user.setPassword(existingUser.getPassword());
+            } else {
+                encodePassword(user);
+            }
+        } else {
+            encodePassword(user);
+        }
+        return userRepo.save(user);
     }
 
     private void encodePassword(User user) {
@@ -52,10 +70,40 @@ public class UserService {
         user.setPassword(encodedPassword);
     }
 
-    public boolean isEmailUnique(String email) {
+    public boolean isEmailUnique(Integer id, String email) {
         User userByEmail = userRepo.findByEmail(email);
-        return userByEmail == null;
+        // Если нет пользователя с таким email, он уникален
+        if (userByEmail == null) return true;
+        // Если id равно null, это значит, что создается новый пользователь,
+        // и так как userByEmail не null, email не уникален
+        if (id == null) {
+            return false;
+        }
+        // Если редактируется существующий пользователь,
+        // проверяем, совпадает ли id с найденным по email
+        return userByEmail.getId().equals(id);
+
     }
 
 
+    public User get(Integer id) throws UserNotFoundException {
+        try {
+            return userRepo.findById(id).get();
+        } catch (NoSuchElementException ex) {
+            throw new UserNotFoundException("Пользователь с ID: " + id + " не найден ");
+        }
+    }
+
+    public void delete(Integer id) throws UserNotFoundException {
+        Long countById = userRepo.countById(id);
+
+        if (countById == 0) {
+            throw new UserNotFoundException("Пользователь с ID: " + id + " не найден ");
+        }
+        userRepo.deleteById(id);
+    }
+
+    public void updateUserEnabledStatus(Integer id, boolean enabled) {
+        userRepo.updateEnabledStatus(id, enabled);
+    }
 }

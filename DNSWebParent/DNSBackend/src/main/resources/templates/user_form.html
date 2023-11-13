@@ -4,7 +4,7 @@
 
 <head th:replace="~{fragments :: page_head('Главная страница', 'none')}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-    <title>Create New User</title>
+    <title>[[${pageTitle}]]</title>
 </head>
 
 
@@ -61,44 +61,51 @@
     </div>
 
     <div>
-        <h2>Управление пользователями | Создание нового пользователя</h2>
+        <h2>Управление пользователями | [[${pageTitle}]]</h2>
         <a th:href="@{/users/new}">Создать нового пользователя</a>
     </div>
 
-    <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto"
-        th:object="${user}" onsubmit="return checkEmailUnique(this)">
+    <form th:action="@{/users/save}" method="post" style="max-width: 800px; margin: 0 auto"
+          th:object="${user}" onsubmit="return checkEmailUnique(this)" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
         <div class="border border-secondary rounded p-3">
-            <div class="form-group row">
+            <div class="row mb-3">
                 <label for="email" class="col-sm-4 col-form-label">Почта:</label>
                 <div class="col-sm-8">
-                    <input type="email" id="email" class="form-control" th:field="*{email}" required minlength="8" maxlength="128" />
+                    <input type="email" id="email" class="form-control" th:field="*{email}"
+                           required minlength="8" maxlength="128" />
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="row mb-3">
                 <label for="firstName" class="col-sm-4 col-form-label">Имя:</label>
                 <div class="col-sm-8">
-                    <input type="text" id="firstName" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="45" />
+                    <input type="text" id="firstName" class="form-control" th:field="*{firstName}"
+                           required minlength="2" maxlength="45" />
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="row mb-3">
                 <label for="lastName" class="col-sm-4 col-form-label">Фамилия:</label>
                 <div class="col-sm-8">
-                    <input type="text" id="lastName" class="form-control" th:field="*{lastName}" required minlength="2" maxlength="45" />
+                    <input type="text" id="lastName" class="form-control" th:field="*{lastName}"
+                           required minlength="2" maxlength="45" />
                 </div>
             </div>
 
-            <div class="form-group row">
-                <label for="password" class="col-sm-4 col-form-label">Пароль:</label>
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Пароль:</label>
                 <div class="col-sm-8">
-                    <input type="password" id="password" class="form-control" th:field="*{password}" required minlength="8" maxlength="20" />
+                    <input th:if="${user.id == null}" type="password" class="form-control"
+                           th:field="*{password}" required minlength="8" maxlength="20" />
+                    <input th:if="${user.id != null}" type="password" class="form-control"
+                           th:field="*{password}" minlength="8" maxlength="20" />
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="roles" class="col-sm-4 col-form-label">Назначения:</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                     <th:block th:each="role : ${listRoles}">
                         <input id="roles" type="checkbox" th:field="*{roles}"
                                th:text="${role.name}" th:value="${role.id}" class="m-2" />
@@ -110,8 +117,20 @@
 
             <div class="form-group row">
                 <label for="enabled" class="col-sm-4 col-form-label">Доступ:</label>
-                <div class="col-sm-8">
+                <div class="col-sm-8 mt-2">
                     <input type="checkbox" id="enabled" th:field="*{enabled}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="fileImage" class="col-sm-4 col-form-label">Фото:</label>
+                <div class="col-sm-8 mt-2">
+                    <input type="hidden" th:field="*{photos}">
+                    <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg" class="mb-2">
+                    <img id="thumbnail" th:src="@{${user.getPhotosImagePath()}}" class="img-fluid">
+                    
+
+
                 </div>
             </div>
 
@@ -122,11 +141,12 @@
         </div>
     </form>
 
+
     <div class="modal fade text-center" id="modalDialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalTitle">Предупреждение</h4>
+                    <h4 class="modal-title" id="modalTitle"></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -150,13 +170,35 @@
         $("#buttonCancel").click(function () {
             window.location = "[[@{/users}]]";
         });
+
+        $("#fileImage").change(function (){
+            let fileSize = this.files[0].size;
+            alert(fileSize);
+            if (fileSize > 1048576) {
+                this.setCustomValidity("Файл должен быть менее 1MB!");
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("");
+                showImageThumbnail(this);
+            }
+        });
     });
+
+    function showImageThumbnail(fileInput) {
+        let file = fileInput.files[0];
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            $("#thumbnail").attr("src", e.target.result);
+        };
+        reader.readAsDataURL(file);
+    };
 
     function checkEmailUnique(form) {
         let url = "[[@{/users/check_email}]]";
         let userEmail = $("#email").val();
+        let userId = $("#id").val();
         let csrfValue = $("input[name='_csrf']").val();
-        let params = {email: userEmail, _csrf: csrfValue};
+        let params = {id: userId, email: userEmail, _csrf: csrfValue};
 
 
         $.post(url, params, function (response) {
@@ -172,8 +214,12 @@
     }
 
     function showModalDialog(title, message) {
+
+        // способ обращения с помощью jquery
         $("#modalTitle").text(title);
         $("#modalBody").text(message);
+
+        // другой способ обращаться к идентификатору с помощью нативного js, а не jquery
         const myModal = new bootstrap.Modal(document.getElementById('modalDialog'));
         myModal.show(this);
     }

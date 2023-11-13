@@ -1,5 +1,6 @@
 package com.dns.common.entity;
 
+import com.dns.common.entity.Role;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -128,5 +129,13 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (id == null || photos == null) {
+            return "/images/default-user.png";
+        }
+        return "/user-photos/" + this.id + "/" +this.photos;
     }
 }
