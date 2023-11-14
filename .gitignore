@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+DNSWebParent/DNSBackend/user-photos/
+.DS_Store
+mvnw
+mvnw.cmd
+
