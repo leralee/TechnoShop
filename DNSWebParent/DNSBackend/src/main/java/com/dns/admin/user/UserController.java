@@ -91,20 +91,24 @@ public class UserController {
             }
             String fileName = StringUtils.cleanPath(originalFilename);
             user.setPhotos(fileName);
+
             User savedUser = service.save(user);
             String uploadDir = "user-photos/" + savedUser.getId();
 
             FileUploadedUtil.cleanDir(uploadDir);
             FileUploadedUtil.saveFile(uploadDir, fileName, multipartFile);
         } else {
-            if (user.getPhotos().isEmpty()) {
-                user.setPhotos(null);
-                service.save(user);
-            }
+            if (user.getPhotos().isEmpty()) user.setPhotos(null);
+            service.save(user);
         }
 
-        redirectAttributes.addFlashAttribute("message", "Пользователь успешно добавлен");
-        return "redirect:/users";
+        redirectAttributes.addFlashAttribute("message", "Пользователь успешно сохранен");
+        return getRedirectURLtoAffectedUser(user);
+    }
+
+    private static String getRedirectURLtoAffectedUser(User user) {
+        String firstPartOfEmail = user.getEmail().split("@")[0];
+        return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }
 
     @GetMapping("users/edit/{id}")

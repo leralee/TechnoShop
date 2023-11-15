@@ -53,6 +53,7 @@ public class UserService {
 
     public User save(User user) {
         boolean isUpdatingUser = (user.getId() != null);
+
         if (isUpdatingUser) {
             User existingUser = userRepo.findById(user.getId()).get();
             if (user.getPassword().isEmpty()) {
@@ -63,6 +64,7 @@ public class UserService {
         } else {
             encodePassword(user);
         }
+
         return userRepo.save(user);
     }
 
