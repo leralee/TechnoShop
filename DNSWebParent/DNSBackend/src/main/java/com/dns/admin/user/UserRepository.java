@@ -1,14 +1,11 @@
 package com.dns.admin.user;
 
 import com.dns.common.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-/**
- * @author valeriali on {02.09.2023}
- * @project TechnoShopProject
- */
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
@@ -16,7 +13,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Long countById(Integer id);
 
-    @Query("Update User u Set u.enabled = ?2 where u.id=?1")
+    @Query("SELECT u FROM User u WHERE CONCAT(u.id, ' ', u.email, ' ', u.firstName, ' ', u.lastName) " +
+            "LIKE %:keyword%")
+    Page<User> findAll(String keyword, Pageable pageable);
+
+    @Query("Update User u Set u.enabled = (:enabled) where u.id=(:id)")
     @Modifying
-    public void updateEnabledStatus(Integer id, boolean enabled);
+    void updateEnabledStatus(Integer id, boolean enabled);
 }

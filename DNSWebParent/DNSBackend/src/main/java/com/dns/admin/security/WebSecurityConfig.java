@@ -10,11 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
-/**
- * @author valeriali on {07.09.2023}
- * @project TechnoShopProject
- */
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig{

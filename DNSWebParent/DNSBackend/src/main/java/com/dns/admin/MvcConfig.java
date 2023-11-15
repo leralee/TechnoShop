@@ -7,11 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * @author valeriali on {25.09.2023}
- * @project TechnoShopProject
- */
-
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
