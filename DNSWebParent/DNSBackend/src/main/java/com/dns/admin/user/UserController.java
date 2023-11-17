@@ -3,6 +3,7 @@ package com.dns.admin.user;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
 import com.dns.admin.FileUploadedUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -149,8 +150,15 @@ public class UserController {
         String message = "Пользователь с  ID: " + id + status;
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/users";
-
     }
+
+    @GetMapping("/users/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        List<User> listUsers = service.listAll();
+        UserCsvExporter exporter = new UserCsvExporter();
+        exporter.export(listUsers, response);
+    }
+
 
 
 

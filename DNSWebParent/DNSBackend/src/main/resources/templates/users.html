@@ -62,6 +62,8 @@
     <div>
         <h2>Управление пользователями</h2>
         <a th:href="@{/users/new}">Создать нового пользователя</a>
+        &nbsp;|&nbsp;
+        <a th:href="@{/users/export/csv}">Экспортировать в CSV</a>
     </div>
 
     <div th:if="${message}" class="alert alert-success text-center">
@@ -91,13 +93,13 @@
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
                 <tr>
-                    <th th:replace="fragments :: column_link('id', 'ID')"></th>
+                    <th th:replace="~{fragments :: column_link('id', 'ID')}"></th>
                     <th>Фото</th>
-                    <th th:replace="fragments :: column_link('email', 'Почта')"></th>
-                    <th th:replace="fragments :: column_link('firstName', 'Имя')"></th>
-                    <th th:replace="fragments :: column_link('lastName', 'Фамилия')"></th>
+                    <th th:replace="~{fragments :: column_link('email', 'Почта')}"></th>
+                    <th th:replace="~{fragments :: column_link('firstName', 'Имя')}"></th>
+                    <th th:replace="~{fragments :: column_link('lastName', 'Фамилия')}"></th>
                     <th>Назначение</th>
-                    <th th:replace="fragments :: column_link('enabled', 'Доступ')"></th>
+                    <th th:replace="~{fragments :: column_link('enabled', 'Доступ')}"></th>
                     <th>
                     </th>
                 </tr>
@@ -148,15 +150,15 @@
         <nav>
             <ul class="pagination justify-content-center" >
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${currentPage - 1}, '&laquo;')"></a>
+                    <a th:replace="~{fragments :: page_link(${currentPage - 1}, '&laquo;')}"></a>
                 </li>
 
                 <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
                     th:each="i : ${#numbers.sequence(1, totalPages)}">
-                    <a th:replace="fragments :: page_link(${i}, ${i})"></a>
+                    <a th:replace="~{fragments :: page_link(${i}, ${i})}"></a>
                 </li>
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${currentPage + 1}, '&raquo;')"></a>
+                    <a th:replace="~{fragments :: page_link(${currentPage + 1}, '&raquo;')}"></a>
                 </li>
             </ul>
         </nav>
