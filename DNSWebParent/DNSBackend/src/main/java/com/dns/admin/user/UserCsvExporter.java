@@ -13,18 +13,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class UserCsvExporter {
+public class UserCsvExporter extends AbstractExporter {
     public void export(List<User> listUsers, HttpServletResponse response) throws IOException {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        String timestamp = dateFormat.format(new Date());
-        String fileName = "users_" + timestamp + ".csv";
-
-        response.setContentType("text/csv; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=" + fileName;
-        response.setHeader(headerKey, headerValue);
+        super.setResponseHeader(response, "text/csv; charset=UTF-8", ".csv");
 
         try (ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE)) {
             String[] csvHeader = {"ID", "Почта", "Имя", "Фамилия", "Назначения", "Доступ"};
