@@ -1,5 +1,8 @@
 package com.dns.admin.user;
 
+import com.dns.admin.export.UserCsvExporter;
+import com.dns.admin.export.UserExcelExporter;
+import com.dns.admin.export.UserPdfExporter;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
 import com.dns.admin.FileUploadedUtil;
@@ -163,6 +166,13 @@ public class UserController {
     public void exportToExcel(HttpServletResponse response) throws IOException {
         List<User> listUsers = service.listAll();
         UserExcelExporter exporter = new UserExcelExporter();
+        exporter.export(listUsers, response);
+    }
+
+    @GetMapping("/users/export/pdf")
+    public void exportToPDF(HttpServletResponse response) throws IOException {
+        List<User> listUsers = service.listAll();
+        UserPdfExporter exporter = new UserPdfExporter();
         exporter.export(listUsers, response);
     }
 }

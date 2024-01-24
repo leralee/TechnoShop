@@ -1,71 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       lang="en">
-
 <head th:replace="~{fragments :: page_head('Главная страница', 'none')}">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-    <title>Home - DNS Admin</title>
+    <title>Пользователи - DNS Admin</title>
 </head>
-
 
 <body>
 
 <div class="container-fluid">
-    <div>
-        <nav class="navbar navbar-expand-lg bg-dark navbar-dark" >
-            <a class="navbar-brand" th:href="@{/}">
-                <img alt="logo" th:src="@{/images/logo.png}" style="width: 65px; height: 50px; padding-left: 15px"/>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="topNavbar">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/users}">Пользователи</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/categories}">Категории</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/brands}">Бренды</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/products}">Продукты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/customers}">Клиенты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/shipping}">Доставки</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/orders}">Заказы</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/reports}">Отчет о продажах</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/articles}">Статьи</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/menus}">Меню</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/settings}">Настройки</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-
+    <div th:replace="~{navigation :: menu}"></div>
     <div>
         <h2>Управление пользователями</h2>
-        <a th:href="@{/users/new}">Создать нового пользователя</a>
-        &nbsp;|&nbsp;
-        <a th:href="@{/users/export/csv}">Экспортировать в CSV</a>
-        &nbsp;|&nbsp;
-        <a th:href="@{/users/export/excel}">Экспортировать в Excel</a>
+        <a th:href="@{/users/new}" class="fa-regular fa-user-plus fa-2x icon-dark me-2"></a>
+        <a th:href="@{/users/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark me-2"></a>
+        <a th:href="@{/users/export/excel}" class="fa-solid fa-file-excel fa-2x icon-dark me-2"></a>
+        <a th:href="@{/users/export/pdf}" class="fa-solid fa-file-pdf fa-2x icon-dark"></a>
     </div>
 
     <div th:if="${message}" class="alert alert-success text-center">
@@ -83,25 +34,33 @@
                 <input type="search" name="keyword" th:value="${keyword}" id="search-input" class="form-control" required/>
             </div>
             <div class="col-auto">
-                <input type="submit" value="Искать" class="btn btn-primary"/>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
             </div>
-            <div class="col-auto">
-                <input type="button" value="Отмена" class="btn btn-secondary" onclick="clearFilter()"/>
+            <div class="col-auto p-0">
+                <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                    <i class="fa-solid fa-eraser"></i>
+                </button>
             </div>
         </form>
     </div>
 
-    <div>
+    <div class="full-details">
         <table class="table table-bordered table-striped table-hover table-responsive-xl">
             <thead class="table-dark">
                 <tr>
-                    <th th:replace="~{fragments :: column_link('id', 'ID')}"></th>
+                    <th class="hideable-column">
+                        <th th:replace="~{fragments :: column_link('id', 'ID', 'tag')}"></th>
+                    </th>
                     <th>Фото</th>
-                    <th th:replace="~{fragments :: column_link('email', 'Почта')}"></th>
-                    <th th:replace="~{fragments :: column_link('firstName', 'Имя')}"></th>
-                    <th th:replace="~{fragments :: column_link('lastName', 'Фамилия')}"></th>
+                    <th class="hideable-column">
+                        <th th:replace="~{fragments :: column_link('email', 'Почта', 'tag')}"></th>
+                    </th>
+                    <th th:replace="~{fragments :: column_link('firstName', 'Имя', 'none')}"></th>
+                    <th th:replace="~{fragments :: column_link('lastName', 'Фамилия', 'none')}"></th>
                     <th>Назначение</th>
-                    <th th:replace="~{fragments :: column_link('enabled', 'Доступ')}"></th>
+                    <th th:replace="~{fragments :: column_link('enabled', 'Доступ', 'none')}"></th>
                     <th>
                     </th>
                 </tr>
@@ -109,36 +68,45 @@
 
             <tbody>
                 <tr th:each="user: ${listUsers}">
-                    <td>[[${user.id}]]</td>
+                    <td class="hideable-column">[[${user.id}]]</td>
                     <td>
-                        <span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
-                        <img alt="userPhoto" th:if="${user.photos != null}" th:src="@{${user.getPhotosImagePath()}}"
-                        style="width: 100px"/>
+                        <div th:replace="~{fragments :: user-photos}"></div>
                     </td>
-                    <td>[[${user.email}]]</td>
+                    <td class="hideable-column">[[${user.email}]]</td>
                     <td>[[${user.firstName}]]</td>
                     <td>[[${user.lastName}]]</td>
                     <td>[[${user.roles}]]</td>
                     <td>
-                        <a th:if="${user.enabled == true}" th:href="@{'/users/' + ${user.id} + '/enabled/false'}">
-                            <i class="fa-solid fa-check-circle fa-2x icon-green"></i>
-                        </a>
-                        <a th:if="${user.enabled == false}" th:href="@{'/users/' + ${user.id} + '/enabled/true'}">
-                            <i class="fa-solid fa-circle fa-2x icon-dark"></i>
-                        </a>
+                        <div th:replace="~{fragments :: status(enabled, entityName, entityURL)}"></div>
                     </td>
                     <td>
-                        <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
-                           title="Редактировать пользователя"></a>
+                        <div th:replace="~{fragments :: edit}"></div>
                         &nbsp;
-                        <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
-                           th:href="@{'/users/delete/' + ${user.id}}"
-                           th:userId="${user.id}"
-                           title="Удалить пользователя"></a>
+                        <div th:replace="~{fragments :: delete}"></div>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="less-details">
+        <div th:each="user : ${listUsers}" class="row m-1">
+            <div class="col-4">
+                <div th:replace="~{fragments :: user-photos}"></div>
+            </div>
+            <div class="col-8">
+                <div>[[${user.fullName}]]</div>
+                <div>[[${user.roles}]]</div>
+                <div class="mt-2">
+                    <div th:replace="~{fragments :: status(enabled, entityName, entityURL)}"></div>
+                    &nbsp;
+                    <div th:replace="~{fragments :: edit}"></div>
+                    &nbsp;
+                    <div th:replace="~{fragments :: delete}"></div>
+                </div>
+                <div>&nbsp;</div>
+            </div>
+        </div>
     </div>
 
     <div class="text-center m-1" th:if="${totalItems > 0}">
@@ -150,7 +118,7 @@
 
     <div th:if="${totalPages > 1}">
         <nav>
-            <ul class="pagination justify-content-center" >
+            <ul class="pagination justify-content-center flex-wrap" >
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
                     <a th:replace="~{fragments :: page_link(${currentPage - 1}, '&laquo;')}"></a>
                 </li>
@@ -183,13 +151,7 @@
             </div>
         </div>
     </div>
-
-    <footer class="text-center">
-        <p>DNS Control Panel - Copyright &copy; DNS</p>
-        <div>
-            <a href='https://pngtree.com/freepng/online-shopping-logo-desing_8918925.html' style="color: black">png image from pngtree.com/</a>
-        </div>
-    </footer>
+    <div th:replace="~{fragments :: footer}"></div>
 </div>
 
 <script type="text/javascript">

@@ -6,26 +6,24 @@
 
     <title>[[${title}]]</title>
 
-
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/6.5.1/css/all.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-<!--    <script type="text/javascript" th:src="@{/js/common.js}"></script>-->
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
 <!--    <script type="text/javascript" th:src="@{/js/common_form.js}"></script>-->
-    <script type="text/javascript" th:src="@{/js/common_list.js}"></script>
-
-
-<!--    &lt;!&ndash; Bootstrap CSS CDN &ndash;&gt;-->
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
-<!--    &lt;!&ndash; Our Custom CSS &ndash;&gt;-->
-<!--    <link rel="stylesheet" href="style2.css">-->
-<!--    &lt;!&ndash; Scrollbar Custom CSS &ndash;&gt;-->
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">-->
+<!--    <script type="text/javascript" th:src="@{/js/common_list.js}"></script>-->
 </head>
 <body>
-    <th th:fragment="column_link(fieldName, columnLabel)">
+    <div th:fragment="footer" class="text-center m-3">
+        <p>DNS Control Panel - Copyright &copy; DNS</p>
+        <div>
+            <a href='https://pngtree.com/freepng/online-shopping-logo-desing_8918925.html' style="color: black">png image from pngtree.com/</a>
+        </div>
+    </div>
+
+    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
         <a class="text-white"
            th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir='
                                     + ${sortField != fieldName ? sortDir : reverseSortDir}
@@ -33,7 +31,8 @@
             [[${columnLabel}]]
         </a>
         <span th:if="${sortField == fieldName}"
-              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        </span>
     </th>
 
     <a th:fragment="page_link(pageNum, label)" class="page-link"
@@ -41,6 +40,37 @@
                        + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir}}">
         <span aria-hidden="true">[[${label}]]</span>
     </a>
+
+    <div th:fragment="user-photos" th:remove="tag">
+        <span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+        <img alt="userPhoto" th:if="${user.photos != null}" th:src="@{${user.getPhotosImagePath()}}"
+             style="width: 100px"/>
+    </div>
+
+    <div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
+        <a th:if="${user.enabled == true}"
+           th:href="@{'/users/' + ${user.id} + '/enabled/false'}">
+            <i class="fa-solid fa-check-circle fa-2x icon-green"></i>
+        </a>
+        <a th:if="${user.enabled == false}"
+           th:href="@{'/users/' + ${user.id} + '/enabled/true'}">
+            <i class="fa-solid fa-circle fa-2x icon-dark"></i>
+        </a>
+    </div>
+
+    <div th:fragment="edit" th:remove="tag">
+        <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
+           title="Редактировать пользователя"></a>
+    </div>
+
+    <div th:fragment="delete" th:remove="tag">
+        <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
+           th:href="@{'/users/delete/' + ${user.id}}"
+           th:userId="${user.id}"
+           title="Удалить пользователя"></a>
+    </div>
+
+
 
 
 </body>

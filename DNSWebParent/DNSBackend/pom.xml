@@ -19,6 +19,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
+			<optional>true</optional>
+			<version>3.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.supercsv</groupId>
@@ -30,6 +32,12 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.2.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.3.33</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
