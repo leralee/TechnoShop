@@ -11,10 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author valeriali on {15.12.2023}
- * @project TechnoShopProject
- */
+
 public class DnsUserDetails implements UserDetails {
 
     private User user;

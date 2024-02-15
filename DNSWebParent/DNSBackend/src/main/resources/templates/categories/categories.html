@@ -1,82 +1,181 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments :: page_head('Категории', 'none')"></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head th:replace="~{fragments :: page_head('Категории', 'none')}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+    <title>Категории - DNS Admin</title>
+</head>
 
 <body>
-
-    <div th:replace="navigation :: menu"></div>
-
-    <div class="main-content">
-        <main>
-
+    <div class="container-fluid">
+        <div th:replace="~{navigation :: menu}"></div>
         <div>
-            <a th:href="@{/categories/new}" class="fas fa-plus fa-2x icon-violet mr-2"></a>
+            <h2>Управление категориями</h2>
+            <a th:href="@{/categories/new}" class="fa-regular fa-folder-plus fa-2x icon-dark me-2"></a>
+            <a th:href="@{/categories/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark me-2"></a>
         </div>
 
-
+        <div th:if="${message}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
 
         <div>
-            <form th:action="@{/categories}" class="form-inline m-3">
-                <div class="search-wrapper">
-                    <span class="las la-search"></span>
-                    <input type="search" name="keyword" th:value="${keyword}" placeholder="Поиск"  required/>
-                    &nbsp;</div>
-                &nbsp;&nbsp;
-                <button type="submit" class="btn btn-violet">
-                    <i class="fas fa-search"></i>
-                </button>
-                &nbsp;&nbsp;
-                <button type="button" class="btn border-secondary" onclick="clearFilter()">
-                    <i class="fas fa-eraser"></i>
-                </button>
+            <form th:action="@{/categories/page/1}" class="row g-12 m-3">
+                <input type="hidden" name="sortField" th:value="${sortField}"/>
+                <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+                <div class="col-auto">
+                    <label for="search-input" class="col-form-label">Поиск</label>
+                </div>
+                <div class="col-auto">
+                    <input type="search" name="keyword" th:value="${keyword}" id="search-input" class="form-control" required/>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <div class="col-auto p-0">
+                    <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                        <i class="fa-solid fa-eraser"></i>
+                    </button>
+                </div>
             </form>
         </div>
 
         <div class="full-details">
-            <table class="table table-hover table-responsive-xl">
-                <thead class="thead-light">
-                <tr>
-                    <th>ID</th>
-                    <th>
-                        <a class="text-violet-ondark" th:href="@{'/categories?sortDir=' + ${reverseSortDir}}">Категория</a>
-                        <span th:class="${reverseSortDir == 'desc'} ? 'fas fa-sort-up' : 'fas fa-sort-down'"></span>
-                    </th>
-
-
-                    <th></th>
-                </tr>
+            <table class="table table-bordered table-striped table-hover table-responsive-xl">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="hideable-column">
+                            <th th:replace="~{fragments :: column_link('id', 'ID', 'tag')}"></th>
+                        </th>
+                        <th>Фото</th>
+                        <th class="hideable-column">
+                            <th th:replace="~{fragments :: column_link('name', 'Название', 'tag')}"></th>
+                        </th>
+                        <th th:replace="~{fragments :: column_link('alias', 'Алиас', 'none')}"></th>
+                        <th th:replace="~{fragments :: column_link('enabled', 'Доступ', 'none')}"></th>
+                        <th>
+                        </th>
+                    </tr>
                 </thead>
+
                 <tbody>
-                <tr th:each="cat : ${listCategories}">
-                    <td>[[${cat.id}]]</td>
-                    <td>[[${cat.name}]]</td>
-                    <td>
-                        <div th:replace="fragments :: category_actions"></div>
-                    </td>
-                </tr>
+                    <tr th:each="category: ${listCategories}">
+                        <td class="hideable-column">[[${category.id}]]</td>
+                        <td>
+    <!--                        <span th:if="${category.image == null}" class="fas fa-portrait fa-3x icon-silver"></span>-->
+    <!--                        <img alt="categoryImage" th:if="${category.image != null}" th:src="@{${user.getPhotosImagePath()}}"-->
+    <!--                             style="width: 100px"/>-->
+                            <img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid">
+                        </td>
+                        <td class="hideable-column">[[${category.name}]]</td>
+                        <td>[[${category.alias}]]</td>
+
+                        <td>
+    <!--                        <div th:replace="~{fragments :: status(enabled, entityName, entityURL)}"></div>-->
+                            <a th:if="${category.enabled == true}"
+                               th:href="@{'/categories/' + ${category.id} + '/enabled/false'}">
+                                <i class="fa-solid fa-check-circle fa-2x icon-green"></i>
+                            </a>
+                            <a th:if="${category.enabled == false}"
+                               th:href="@{'/categories/' + ${category.id} + '/enabled/true'}">
+                                <i class="fa-solid fa-circle fa-2x icon-dark"></i>
+                            </a>
+                        </td>
+                        <td>
+    <!--                        <div th:replace="~{fragments :: edit('categories', category)}"></div>-->
+                            <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/categories/edit/' + ${category.id}}"
+                               title="Редактировать пользователя"></a>
+                            &nbsp;
+    <!--                        <div th:replace="~{fragments :: delete}"></div>-->
+                            <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
+                               th:href="@{'/users/delete/' + ${category.id}}"
+                               th:userId="${category.id}"
+                               title="Удалить пользователя"></a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
-        <div th:replace="modal_fragments :: confirm_modal"></div>
+        <div class="less-details">
+            <div th:each="user : ${listUsers}" class="row m-1">
+                <div class="col-4">
+                    <div th:replace="~{fragments :: user-photos}"></div>
+                </div>
+                <div class="col-8">
+                    <div>[[${user.fullName}]]</div>
+                    <div>[[${user.roles}]]</div>
+                    <div class="mt-2">
+                        <div th:replace="~{fragments :: status(enabled, entityName, entityURL)}"></div>
+                        &nbsp;
+                        <div th:replace="~{fragments :: edit}"></div>
+                        &nbsp;
+                        <div th:replace="~{fragments :: delete}"></div>
+                    </div>
+                    <div>&nbsp;</div>
+                </div>
+            </div>
+        </div>
 
-        </main>
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Показаны пользователи # [[${startCount}]] до [[${endCount}]] из [[${totalItems}]]</span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>Пользователи не найдены</span>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center flex-wrap" >
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${currentPage - 1}, '&laquo;')}"></a>
+                    </li>
+
+                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="~{fragments :: page_link(${i}, ${i})}"></a>
+                    </li>
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${currentPage + 1}, '&raquo;')}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="modal fade text-center" id="confirmModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Подтверждение удаления</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <span id="confirmText"> </span>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-success" href="" id="yesButton">Да</a>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Нет</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
 
-
-
-
-<script th:src="@{/js/common_list.js}"></script>
-<script type="text/javascript">
-    moduleURL = "[[@{/categories}]]";
-
-    $(document).ready(function() {
-        $(".link-delete").on("click", function (e){
-            e.preventDefault();
-            showDeleteConfirmModal($(this), 'категорию');
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".link-delete").on("click", function (e) {
+                e.preventDefault();
+                link = $(this);
+                userId = link.attr("userId");
+                $("#yesButton").attr("href", link.attr("href"))
+                $("#confirmText").text("Вы уверены, что хотите удалить пользователя c ID: " + userId + "?");
+                $("#confirmModal").modal('show');
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>

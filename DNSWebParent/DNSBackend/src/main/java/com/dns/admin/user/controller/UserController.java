@@ -1,11 +1,13 @@
-package com.dns.admin.user;
+package com.dns.admin.user.controller;
 
-import com.dns.admin.export.UserCsvExporter;
-import com.dns.admin.export.UserExcelExporter;
-import com.dns.admin.export.UserPdfExporter;
+import com.dns.admin.FileUploadedUtil;
+import com.dns.admin.user.export.UserCsvExporter;
+import com.dns.admin.user.export.UserExcelExporter;
+import com.dns.admin.user.export.UserPdfExporter;
+import com.dns.admin.user.UserNotFoundException;
+import com.dns.admin.user.UserService;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
-import com.dns.admin.FileUploadedUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,8 +49,8 @@ public class UserController {
 
     @GetMapping("/users/page/{pageNum}")
     public String listByPage(@PathVariable("pageNum") int pageNum, Model model,
-                             @Param("sortField") String sortField, @Param("sortDir") String sortDir,
-                             @Param("keyword") String keyword
+                             @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
+                             @RequestParam("keyword") String keyword
                             ) {
         Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
         List<User> listUsers = page.getContent();
@@ -71,7 +73,7 @@ public class UserController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
         model.addAttribute("keyword", keyword);
-        return "users";
+        return "users/users";
     }
 
     @GetMapping("/users/new")
@@ -82,12 +84,13 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("listRoles", listRoles);
         model.addAttribute("pageTitle", "Создание нового пользователя");
-        return "user_form";
+        return "users/user_form";
     }
 
     @PostMapping("/users/save")
     public String saveUser(User user, RedirectAttributes redirectAttributes,
                            @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        System.out.println("USER save");
         if (!multipartFile.isEmpty()) {
             String originalFilename = multipartFile.getOriginalFilename();
             if (originalFilename == null) {
@@ -118,13 +121,14 @@ public class UserController {
     @GetMapping("users/edit/{id}")
     public String editUser(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
+            System.out.println("user get ID");
             User user = service.get(id);
             List<Role> listRoles = service.listRoles();
             model.addAttribute("user", user);
             model.addAttribute("pageTitle", "Редактирование пользователя (ID: " + id + ")");
             model.addAttribute("listRoles", listRoles);
 
-            return "user_form";
+            return "users/user_form";
         } catch (UserNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
             return "redirect:/users";

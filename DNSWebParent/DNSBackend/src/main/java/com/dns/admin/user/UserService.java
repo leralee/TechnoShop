@@ -1,10 +1,12 @@
 package com.dns.admin.user;
 
+import com.dns.admin.user.RoleRepository;
+import com.dns.admin.user.UserNotFoundException;
+import com.dns.admin.user.UserRepository;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
 
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Transactional

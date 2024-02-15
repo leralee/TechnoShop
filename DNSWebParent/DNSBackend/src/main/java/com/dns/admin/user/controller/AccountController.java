@@ -1,7 +1,8 @@
-package com.dns.admin.user;
+package com.dns.admin.user.controller;
 
 import com.dns.admin.FileUploadedUtil;
 import com.dns.admin.security.DnsUserDetails;
+import com.dns.admin.user.UserService;
 import com.dns.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +33,7 @@ public class AccountController {
         String email = loggedUser.getUsername();
         User user = service.getByEmail(email);
         model.addAttribute("user", user);
-        return "account_form";
+        return "users/account_form";
     }
 
     @PostMapping("/account/update")

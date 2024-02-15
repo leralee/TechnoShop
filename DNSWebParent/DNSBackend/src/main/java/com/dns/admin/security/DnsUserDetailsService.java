@@ -1,6 +1,5 @@
 package com.dns.admin.security;
 
-import com.dns.admin.user.UserNotFoundException;
 import com.dns.admin.user.UserRepository;
 import com.dns.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;

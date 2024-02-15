@@ -7,12 +7,16 @@
     <title>Главная - DNS Admin</title>
 </head>
 
-
 <body>
-
-<div class="container-fluid">
-    <div th:replace="~{navigation :: menu}"></div>
-</div>
-<div th:replace="~{fragments :: footer}"></div>
+    <div class="container-fluid">
+        <div th:replace="~{navigation :: menu}"></div>
+        <div>
+            <h2>Контроль управления</h2>
+            Добро пожаловать
+            <a th:href="@{/account}" sec:authentication="principal.fullName"></a>
+            <span sec:authentication="principal.authorities"></span>
+        </div>
+        <div th:replace="~{fragments :: footer}"></div>
+    </div>
 </body>
 </html>

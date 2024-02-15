@@ -1,8 +1,7 @@
-package com.dns.admin;
+package com.dns.admin.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.dns.admin.user.RoleRepository;
 import com.dns.common.entity.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

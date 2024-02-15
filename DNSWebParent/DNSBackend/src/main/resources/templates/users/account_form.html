@@ -1,121 +1,130 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
 
-      xmlns="http://www.w3.org/1999/html">
-<head th:replace="fragments :: page_head('Редактирование', 'none')"></head>
+<head th:replace="~{fragments :: page_head('Профиль', 'none')}"></head>
+
+
 <body>
 
-    <div th:replace="navigation :: menu"></div>
-    <div class="main-content">
-        <main>
+<div class="container-fluid">
+    <div th:replace="~{navigation :: menu}"></div>
 
-        <form th:action="@{/account/update}" method="post" class="container col-sm-8"
-              th:object="${user}">
-            <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{/account/update}" method="post" style="max-width: 800px; margin: 0 auto"
+          th:object="${user}" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="text-center">
+            <h2>Профиль</h2>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+
+        <div class="border border-secondary rounded p-3">
+            <div class="row mb-3">
+                <label for="email" class="col-sm-4 col-form-label">Почта:</label>
+                <div class="col-sm-8">
+                    <input type="email" id="email" class="form-control" th:field="*{email}"
+                            readonly="readonly"/>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="firstName" class="col-sm-4 col-form-label">Имя:</label>
+                <div class="col-sm-8">
+                    <input type="text" id="firstName" class="form-control" th:field="*{firstName}"
+                           required minlength="2" maxlength="45" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="lastName" class="col-sm-4 col-form-label">Фамилия:</label>
+                <div class="col-sm-8">
+                    <input type="text" id="lastName" class="form-control" th:field="*{lastName}"
+                           required minlength="2" maxlength="45" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Пароль:</label>
+                <div class="col-sm-8">
+                    <input type="password" th:field="*{password}" class="form-control"
+                           placeholder="Оставьте поле пустым, если не хотите изменять пароль" autocomplete="new-password" minlength="1" maxlength="20"
+                    oninput="checkPasswordMatch(document.getElementById('confirmPassword'))"/>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Повторите пароль:</label>
+                <div class="col-sm-8">
+                    <input type="password" id="confirmPassword" class="form-control" minlength="1" maxlength="20"
+                    oninput="checkPasswordMatch(this)" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Назначения:</label>
+                <div class="col-sm-8 mt-2">
+<!--                    обращаемся к конкретно к бину и его методу для получения списка ролей-->
+<!--                    вместо того, чтобы передавать через model в контроллере-->
+                        <span th:text="${user.roles}" class="m-2" />
+
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="fileImage" class="col-sm-4 col-form-label">Фото:</label>
+                <div class="col-sm-8 mt-2">
+                    <input type="hidden" th:field="*{photos}">
+                    <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg" class="mb-2">
+                    <img id="thumbnail" th:src="@{${user.getPhotosImagePath()}}" class="img-fluid">
+                    
+
+
+                </div>
+            </div>
+
             <div class="text-center">
-                <h2>Редактирование профиля</h2>
+                <input type="submit" value="Сохранить" class="btn btn-primary m-3" />
+                <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel" />
             </div>
-
-            <div th:if="${message != null}" class="alert alert-success text-center">
-                [[${message}]]
-            </div>
-
-            <div class="border border-secondary rounded p-3">
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Логин:</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{username}" readonly="readonly"/>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Имя:</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control"   th:field="*{firstName}" required minlength="2" maxlength="32"/>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Фамилия:</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control"  th:field="*{lastName}" required minlength="2" maxlength="32"/>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Пароль:</label>
-                    <div class="col-sm-8">
-                        <input type="password" th:field="*{password}" class="form-control"
-                        placeholder="поменять пароль"
-                        minlength="1" maxlength="32"
-                        oninput="checkPasswordMatch(document.getElementById('confirmPassword'))">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Подтвердить пароль:</label>
-                    <div class="col-sm-8">
-                        <input type="password" id="confirmPassword" class="form-control"
-                               minlength="1" maxlength="32"
-                            oninput="checkPasswordMatch(this)"/>
-
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Роли:</label>
-                    <div class="col-sm-8">
-                       <span><b>[[${user.roles}]]</b></span>
-                    </div>
-                </div>
+        </div>
+    </form>
 
 
-                <div class="modal fade text-center" id="modalDialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="modalTitle">Warning</h4>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <span id="modalBody"></span>
-                            </div>
+<!--    <div class="modal fade text-center" id="modalDialog">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h4 class="modal-title" id="modalTitle"></h4>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <span id="modalBody"></span>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div th:replace="~{fragments :: footer}"></div>
+</div>
 
-                <div class="text-center">
-                    <input type="submit" value="Сохранить" class="btn btn-violet m-3"/>
-                    <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel"/>
-
-                </div>
-            </div>
-
-
-        </form>
-        </main>
-    </div>
 
 <script type="text/javascript">
-    moduleURL = "[[@{/}]]";
-
-
-    function checkPasswordMatch(confirmPassword){
-        if (confirmPassword.value != $("#password").val()) {
-            confirmPassword.setCustomValidity("Пароль не совпадает!");
+    moduleURL = "[[@{/}]]"
+    function checkPasswordMatch(confirmPassword) {
+        if (confirmPassword.value !== $("#password").val()) {
+            confirmPassword.setCustomValidity("Пароли не совпадают!")
         } else {
             confirmPassword.setCustomValidity("");
         }
     }
-
 </script>
-
-
-
+<script th:src="@{/js/common_form.js}"></script>
 </body>
 
 </html>

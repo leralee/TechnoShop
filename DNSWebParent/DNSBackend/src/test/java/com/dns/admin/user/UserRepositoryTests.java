@@ -1,8 +1,7 @@
-package com.dns.admin;
+package com.dns.admin.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.dns.admin.user.UserRepository;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
 import org.junit.jupiter.api.Test;
@@ -19,11 +18,6 @@ import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 import java.util.Optional;
-
-/**
- * @author valeriali on {02.09.2023}
- * @project TechnoShopProject
- */
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)

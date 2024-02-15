@@ -1,25 +1,29 @@
-// $(document).ready(function () {
-//     $("#buttonCancel").on("click", function (){
-//         window.location = moduleURL;
-//     });
-//
-//     $("#fileImage").change(function () {
-//         if (!checkFileSize(this)) {
-//             return;
-//         }
-//         showImageThumbnail(this);
-//     });
-// });
+$(document).ready(function () {
+    $("#buttonCancel").click(function () {
+        window.location = moduleURL;
+    });
 
-// function showImageThumbnail(fileInput) {
-//     var file = fileInput.files[0];
-//     var reader = new FileReader();
-//     reader.onload = function(e) {
-//         $("#thumbnail").attr("src", e.target.result);
-//     };
-//     reader.readAsDataURL(file);
-// }
-//
+    $("#fileImage").change(function (){
+        let fileSize = this.files[0].size;
+        if (fileSize > 10485760) {
+            this.setCustomValidity("Файл должен быть менее 10MB!");
+            this.reportValidity();
+        } else {
+            this.setCustomValidity("");
+            showImageThumbnail(this);
+        }
+    });
+});
+
+function showImageThumbnail(fileInput) {
+    let file = fileInput.files[0];
+    let reader = new FileReader();
+    reader.onload = function (e) {
+        $("#thumbnail").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(file);
+}
+
 // function checkFileSize(fileInput) {
 //     fileSize = fileInput.files[0].size;
 //

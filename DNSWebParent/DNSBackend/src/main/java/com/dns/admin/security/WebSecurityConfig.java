@@ -3,20 +3,14 @@ package com.dns.admin.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices.RememberMeTokenAlgorithm;
 
 
 @Configuration
@@ -44,15 +38,30 @@ public class WebSecurityConfig{
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
         http
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/users/**").hasAuthority("Админ")
+                        .requestMatchers("/categories/**").hasAnyAuthority("Админ", "Редактор")
+                        .requestMatchers("/brands/**").hasAnyAuthority("Админ", "Редактор")
+                        .requestMatchers("/products/**").hasAnyAuthority("Админ", "Продавец", "Редактор", "Отправитель")
+                        .requestMatchers("/questions/**").hasAnyAuthority("Админ", "Ассистент")
+                        .requestMatchers("/reviews/**").hasAnyAuthority("Админ", "Ассистент")
+                        .requestMatchers("/customers/**").hasAnyAuthority("Админ", "Продавец")
+                        .requestMatchers("/shipping/**").hasAnyAuthority("Админ", "Продавец")
+                        .requestMatchers("/orders/**").hasAnyAuthority("Админ", "Продавец", "Отправитель")
+                        .requestMatchers("/reports/**").hasAnyAuthority("Админ", "Продавец")
+                        .requestMatchers("/articles/**").hasAnyAuthority("Админ", "Редактор")
+                        .requestMatchers("/menus/**").hasAnyAuthority("Админ", "Редактор")
+                        .requestMatchers("/settings/**").hasAuthority("Админ")
+                        .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .usernameParameter("email")
                         .permitAll()
                 )
+                .logout((LogoutConfigurer::permitAll))
                 .rememberMe((remember) -> remember.key("springRocks")
-                        .tokenValiditySeconds(7 * 24 * 60 * 60))
-                .logout((LogoutConfigurer::permitAll));
+                        .tokenValiditySeconds(7 * 24 * 60 * 60));
+
 
 
         return http.build();

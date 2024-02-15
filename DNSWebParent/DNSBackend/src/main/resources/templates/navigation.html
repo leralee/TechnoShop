@@ -16,37 +16,43 @@
             </button>
             <div class="collapse navbar-collapse" id="topNavbar">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAuthority('Админ')">
                         <a class="nav-link" th:href="@{/users}">Пользователи</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
                         <a class="nav-link" th:href="@{/categories}">Категории</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
                         <a class="nav-link" th:href="@{/brands}">Бренды</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Продавец', 'Редактор', 'Отправитель')">
                         <a class="nav-link" th:href="@{/products}">Продукты</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Ассистент')">
+                        <a class="nav-link" th:href="@{/questions}">Вопросы</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Ассистент')">
+                        <a class="nav-link" th:href="@{/reviews}">Отзывы</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Продавец')">
                         <a class="nav-link" th:href="@{/customers}">Клиенты</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/shipping}">Доставки</a>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Продавец')">
+                        <a class="nav-link" th:href="@{/shipping}">Доставка</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Продавец', 'Отправитель')">
                         <a class="nav-link" th:href="@{/orders}">Заказы</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Продавец')">
                         <a class="nav-link" th:href="@{/reports}">Отчет о продажах</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
                         <a class="nav-link" th:href="@{/articles}">Статьи</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
                         <a class="nav-link" th:href="@{/menus}">Меню</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAuthority('Админ')">
                         <a class="nav-link" th:href="@{/settings}">Настройки</a>
                     </li>
                     <li>
