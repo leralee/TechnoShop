@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.linesOf;
 
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -85,5 +86,21 @@ public class CategoryRepositoryTests {
     public void testListRootCategories() {
         List<Category> rootCategories = repo.findRootCategories();
         rootCategories.forEach(category -> System.out.println(category.getName()));
+    }
+
+    @Test
+    public void testFindByName() {
+        String name = "Компьютеры";
+        Category category = repo.findByName(name);
+        assertThat(category).isNotNull();
+        assertThat(category.getName()).isEqualTo(name);
+    }
+
+    @Test
+    public void testFindByAlias() {
+        String alias = "Память";
+        Category category = repo.findByAlias(alias);
+        assertThat(category).isNotNull();
+        assertThat(category.getName()).isEqualTo(alias);
     }
 }

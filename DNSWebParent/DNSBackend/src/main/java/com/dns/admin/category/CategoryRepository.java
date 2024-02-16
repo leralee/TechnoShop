@@ -15,6 +15,10 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     @Query("SELECT c FROM Category c WHERE c.parent.id is NULL")
     List<Category> findRootCategories();
+
+    Category findByName(String name);
+
+    Category findByAlias(String alias);
     @Query("SELECT u FROM Category u WHERE u.name LIKE %:keyword%")
     Page<Category> findAll(String keyword, Pageable pageable);
 }

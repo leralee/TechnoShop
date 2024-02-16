@@ -48,7 +48,7 @@
 <!--                        то поле для изображение останется пустым, что нарушает условие бд-->
                         <input type="hidden" th:field="*{image}">
                         <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" class="mb-2"
-                               style="display: flex; align-items: center" th:required="${category.imagePath == null}">
+                               style="display: flex; align-items: center" th:required="${category.image == null}">
                         <div class="mt-2">
                             <img id="thumbnail" class="img-fluid" th:src="@{${category.imagePath}}">
                         </div>

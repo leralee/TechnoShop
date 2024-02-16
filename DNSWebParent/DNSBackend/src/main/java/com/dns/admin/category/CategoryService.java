@@ -1,6 +1,7 @@
 package com.dns.admin.category;
 
 import com.dns.common.entity.Category;
+import com.dns.common.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -110,5 +111,22 @@ public class CategoryService {
         } catch (NoSuchElementException ex) {
             throw new CategoryNotFoundException("Категория с ID: " + id + " не найдена");
         }
+    }
+
+    public String checkUnique(Integer id, String name, String alias) {
+        boolean isCreatingNew = (id==null || id == 0);
+        Category categoryByName = repo.findByName(name);
+
+        if (isCreatingNew) {
+            if (categoryByName != null) {
+                return "DuplicateName";
+            } else {
+                Category categoryByAlias = repo.findByAlias(alias);
+                if (categoryByAlias != null) {
+                    return "DuplicateAlias";
+                }
+            }
+        }
+        return "OK";
     }
 }
