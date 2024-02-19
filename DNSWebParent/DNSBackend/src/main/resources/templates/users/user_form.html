@@ -7,143 +7,113 @@
 
 <body>
 
-<div class="container-fluid">
-    <div th:replace="~{navigation :: menu}"></div>
-    <div>
-        <h2>Управление пользователями | [[${pageTitle}]]</h2>
-    </div>
-
-    <form th:action="@{/users/save}" method="post" style="max-width: 800px; margin: 0 auto"
-          th:object="${user}" onsubmit="return checkEmailUnique(this)" enctype="multipart/form-data">
-        <input type="hidden" th:field="*{id}"/>
-        <div class="border border-secondary rounded p-3">
-            <div class="row mb-3">
-                <label for="email" class="col-sm-4 col-form-label">Почта:</label>
-                <div class="col-sm-8">
-                    <input type="email" id="email" class="form-control" th:field="*{email}"
-                           required minlength="8" maxlength="128" />
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="firstName" class="col-sm-4 col-form-label">Имя:</label>
-                <div class="col-sm-8">
-                    <input type="text" id="firstName" class="form-control" th:field="*{firstName}"
-                           required minlength="2" maxlength="45" />
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label for="lastName" class="col-sm-4 col-form-label">Фамилия:</label>
-                <div class="col-sm-8">
-                    <input type="text" id="lastName" class="form-control" th:field="*{lastName}"
-                           required minlength="2" maxlength="45"/>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Пароль:</label>
-                <div class="col-sm-8">
-                    <input th:if="${user.id == null}" type="password" class="form-control"
-                           th:field="*{password}" required minlength="1" maxlength="20" />
-                    <input th:if="${user.id != null}" type="password" class="form-control"
-                           th:field="*{password}" minlength="1" maxlength="20" />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="roles" class="col-sm-4 col-form-label">Назначения:</label>
-                <div class="col-sm-8 mt-2">
-<!--                    обращаемся к конкретно к бину и его методу для получения списка ролей-->
-<!--                    вместо того, чтобы передавать через model в контроллере-->
-                    <th:block th:each="role : ${@userService.listRoles()}">
-                        <input id="roles" type="checkbox" th:field="*{roles}"
-                               th:text="${role.name}" th:value="${role.id}" class="m-2" />
-                        - <small>[[${role.description}]]</small>
-                        <br/>
-                    </th:block>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="enabled" class="col-sm-4 col-form-label">Доступ:</label>
-                <div class="col-sm-8 mt-2">
-                    <input type="checkbox" id="enabled" th:field="*{enabled}">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="fileImage" class="col-sm-4 col-form-label">Фото:</label>
-                <div class="col-sm-8 mt-2">
-                    <input type="hidden" th:field="*{photos}">
-                    <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg" class="mb-2">
-                    <img id="thumbnail" th:src="@{${user.getPhotosImagePath()}}" class="img-fluid">
-                </div>
-            </div>
-
-            <div class="text-center">
-                <input type="submit" value="Сохранить" class="btn btn-primary m-3" />
-                <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel" />
-            </div>
+    <div class="container-fluid">
+        <div th:replace="~{navigation :: menu}"></div>
+        <div>
+            <h2>Управление пользователями | [[${pageTitle}]]</h2>
         </div>
-    </form>
 
+        <form th:action="@{/users/save}" method="post" style="max-width: 800px; margin: 0 auto"
+              enctype="multipart/form-data"
+              onsubmit="return checkEmailUnique(this)"
+              th:object="${user}"  >
+            <input type="hidden" th:field="*{id}"/>
+            <div class="border border-secondary rounded p-3">
+                <div class="row mb-3">
+                    <label for="email" class="col-sm-4 col-form-label">Почта:</label>
+                    <div class="col-sm-8">
+                        <input type="email" id="email" class="form-control" th:field="*{email}"
+                               required minlength="8" maxlength="128" />
+                    </div>
+                </div>
 
-    <div class="modal fade text-center" id="modalDialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modalTitle"></h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="row mb-3">
+                    <label for="firstName" class="col-sm-4 col-form-label">Имя:</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="firstName" class="form-control" th:field="*{firstName}"
+                               required minlength="2" maxlength="45" />
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <span id="modalBody"></span>
+
+                <div class="row mb-3">
+                    <label for="lastName" class="col-sm-4 col-form-label">Фамилия:</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="lastName" class="form-control" th:field="*{lastName}"
+                               required minlength="2" maxlength="45"/>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Пароль:</label>
+                    <div class="col-sm-8">
+                        <input th:if="${user.id == null}" type="password" class="form-control"
+                               th:field="*{password}" required minlength="1" maxlength="20" />
+                        <input th:if="${user.id != null}" type="password" class="form-control"
+                               th:field="*{password}" minlength="1" maxlength="20" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="roles" class="col-sm-4 col-form-label">Назначения:</label>
+                    <div class="col-sm-8 mt-2">
+    <!--                    обращаемся к конкретно к бину и его методу для получения списка ролей-->
+    <!--                    вместо того, чтобы передавать через model в контроллере-->
+                        <th:block th:each="role : ${@userService.listRoles()}">
+                            <input id="roles" type="checkbox" th:field="*{roles}"
+                                   th:text="${role.name}" th:value="${role.id}" class="m-2" />
+                            - <small>[[${role.description}]]</small>
+                            <br/>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="enabled" class="col-sm-4 col-form-label">Доступ:</label>
+                    <div class="col-sm-8 mt-2">
+                        <input type="checkbox" id="enabled" th:field="*{enabled}">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="fileImage" class="col-sm-4 col-form-label">Фото:</label>
+                    <div class="col-sm-8 mt-2">
+                        <input type="hidden" th:field="*{photos}">
+                        <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg" class="mb-2">
+                        <img id="thumbnail" th:src="@{${user.getPhotosImagePath()}}" class="img-fluid">
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <input type="submit" value="Сохранить" class="btn btn-primary m-3" />
+                    <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel" />
                 </div>
             </div>
-        </div>
+        </form>
+        <div th:replace="modal_fragments :: modal_dialog"></div>
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
-
-    <div th:replace="~{fragments :: footer}"></div>
-</div>
-
-
-<script type="text/javascript">
-    moduleURL = "[[@{/users}]]"
-    function checkEmailUnique(form) {
-        let url = "[[@{/users/check_email}]]";
-        let userEmail = $("#email").val();
-        let userId = $("#id").val();
-        let csrfValue = $("input[name='_csrf']").val();
-        let params = {id: userId, email: userEmail, _csrf: csrfValue};
+    <script type="text/javascript">
+        moduleURL = "[[@{/users}]]"
+        function checkEmailUnique(form) {
+            let url = "[[@{/users/check_email}]]";
+            let userEmail = $("#email").val();
+            let userId = $("#id").val();
+            let csrfValue = $("input[name='_csrf']").val();
+            let params = {id: userId, email: userEmail, _csrf: csrfValue};
 
 
-        $.post(url, params, function (response) {
-            if (response === "OK") {
-                form.submit();
-            } else if (response === "Duplicated") {
-                showModalDialog("Предупреждение", "Пользователь с email " + userEmail + " существует");
-            }
-        }).fail(function () {
-            showModalDialog("Ошибка", "Не удалось подключить к серверу")
-        });
-        return false;
-    }
-
-    function showModalDialog(title, message) {
-
-        // способ обращения с помощью jquery
-        $("#modalTitle").text(title);
-        $("#modalBody").text(message);
-
-        // другой способ обращаться к идентификатору с помощью нативного js, а не jquery
-        const myModal = new bootstrap.Modal(document.getElementById('modalDialog'));
-        myModal.show(this);
-    }
-</script>
-<script th:src="@{/js/common_form.js}"></script>
+            $.post(url, params, function (response) {
+                if (response === "OK") {
+                    form.submit();
+                } else if (response === "Duplicated") {
+                    showWarningModal("Пользователь с email " + userEmail + " существует");
+                }
+            }).fail(function () {
+                showErrorModal("Не удалось подключить к серверу")
+            });
+            return false;
+        }
+    </script>
+    <script th:src="@{/js/common_form.js}"></script>
 </body>
-
 </html>

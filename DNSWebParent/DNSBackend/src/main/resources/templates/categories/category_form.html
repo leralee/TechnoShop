@@ -10,6 +10,7 @@
 
         <form th:action="@{/categories/save}" method="post" style="max-width: 500px; margin: 0 auto"
               enctype="multipart/form-data"
+              onsubmit="return checkUnique(this)"
               th:object="${category}">
             <input type="hidden" th:field="*{id}"/>
             <div class="border border-secondary rounded p-3">
@@ -39,7 +40,6 @@
                     </div>
                 </div>
 
-
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Фото:</label>
                     <div class="col-sm-8">
@@ -63,57 +63,43 @@
                     </div>
                 </div>
 
-
                 <div class="text-center">
                     <input type="submit" value="Сохранить" class="btn btn-violet m-3"/>
                     <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel"/>
                 </div>
             </div>
         </form>
-
-        <div th:replace="~{fragments :: footer}"></div>
-
         <div th:replace="modal_fragments :: modal_dialog"></div>
-        <script type="text/javascript">
-
-            moduleURL = "[[@{/categories}]]";
-
-            // function checkUnique(form) {
-            //
-            //     url = "[[@{/categories/check_unique}]]";
-            //     catId = $("#id").val();
-            //     catName = $("#name").val();
-            //
-            //     csrfValue = $("input[name='_csrf']").val();
-            //
-            //     params = {id: catId, name: catName, _csrf: csrfValue};
-            //
-            //     $.post(url, params, function (response){
-            //         if (response === "OK"){
-            //             form.submit();
-            //         } else if (response === "Duplicate") {
-            //             showModalDialog("Уже сущесвует такая категория")
-            //         }
-            //     }).fail(function (){
-            //         showModalDialog("Нет соедининения с сервером")
-            //     })
-            //
-            //     return false;
-            // }
-            //
-            // function showModalDialog(title, message) {
-            //
-            //     // способ обращения с помощью jquery
-            //     $("#modalTitle").text(title);
-            //     $("#modalBody").text(message);
-            //
-            //     // другой способ обращаться к идентификатору с помощью нативного js, а не jquery
-            //     const myModal = new bootstrap.Modal(document.getElementById('modalDialog'));
-            //     myModal.show(this);
-            // }
-
-        </script>
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
+    <script type="text/javascript">
+        moduleURL = "[[@{/categories}]]";
+        function checkUnique(form) {
+            url = "[[@{/categories/check_unique}]]";
+            catId = $("#id").val();
+            catName = $("#name").val();
+            catAlias = $("#alias").val();
+
+            csrfValue = $("input[name='_csrf']").val();
+
+            params = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue};
+
+            $.post(url, params, function (response){
+                if (response === "OK"){
+                    form.submit();
+                } else if (response === "DuplicateName") {
+                    showWarningModal("Уже существует категория с названием: " + catName);
+                } else if (response === "DuplicateAlias") {
+                    showWarningModal("Уже существует категория с алиасом: " + catAlias);
+                } else {
+                    showErrorModal("Неизвестный ответ от сервера");
+                }
+            }).fail(function (){
+                showErrorModal("Нет соедининения с сервером");
+            })
+            return false;
+        }
+    </script>
     <script th:src="@{/js/common_form.js}"></script>
 
 </body>

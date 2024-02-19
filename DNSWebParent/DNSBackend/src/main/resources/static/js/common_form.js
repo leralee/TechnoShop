@@ -39,21 +39,22 @@ function showImageThumbnail(fileInput) {
 //     }
 //
 // }
-//
-// function showModalDialog(title, message){
-//     $("#modalTitle").val(title);
-//     $("#modalBody").text(message);
-//     $("#modalDialog").modal();
-//
-// }
-//
-// function showErrorModal(message){
-//     showModalDialog("Error", message);
-// }
-//
-// function showWarningModal(message){
-//     showModalDialog("Warning", message);
-// }
+function showModalDialog(title, message) {
+    // способ обращения с помощью jquery
+    $("#modalTitle").text(title);
+    $("#modalBody").text(message);
+
+    // другой способ обращаться к идентификатору с помощью нативного js, а не jquery
+    const myModal = new bootstrap.Modal(document.getElementById('modalDialog'));
+    myModal.show(this);
+}
+
+function showErrorModal(message) {
+    showModalDialog("Ошибка", message);
+}
+function showWarningModal(message) {
+    showModalDialog("Предупреждение", message);
+}
 
 
 

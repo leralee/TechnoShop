@@ -134,23 +134,7 @@
         </nav>
     </div>
 
-    <div class="modal fade text-center" id="confirmModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Подтверждение удаления</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <span id="confirmText"> </span>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-success" href="" id="yesButton">Да</a>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Нет</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div th:replace="~{fragments :: footer}"></div>
 </div>
 
@@ -166,7 +150,5 @@
         });
     });
 </script>
-
-
 </body>
 </html>
