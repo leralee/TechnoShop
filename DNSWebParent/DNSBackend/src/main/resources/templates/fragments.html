@@ -58,6 +58,29 @@
         </a>
     </div>
 
+    <div th:fragment="category_status" th:remove="tag">
+        <a th:if="${category.enabled == true}"
+           th:href="@{'/categories/' + ${category.id} + '/enabled/false'}">
+            <i class="fa-solid fa-check-circle fa-2x icon-green"></i>
+        </a>
+        <a th:if="${category.enabled == false}"
+           th:href="@{'/categories/' + ${category.id} + '/enabled/true'}">
+            <i class="fa-solid fa-circle fa-2x icon-dark"></i>
+        </a>
+    </div>
+
+    <div th:fragment="category_actions" th:remove="tag">
+        <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/categories/edit/' + ${category.id}}"
+           title="Редактировать пользователя"></a>
+        &nbsp;
+        <th:block th:if="${category.isHasChildren() == false}">
+        <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
+           th:href="@{'/categories/delete/' + ${category.id}}"
+           th:entityId="${category.id}"
+           title="Удалить пользователя"></a>
+        </th:block>
+    </div>
+
     <div th:fragment="edit" th:remove="tag">
         <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
            title="Редактировать пользователя"></a>
@@ -66,13 +89,9 @@
     <div th:fragment="delete" th:remove="tag">
         <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
            th:href="@{'/users/delete/' + ${user.id}}"
-           th:userId="${user.id}"
-
+           th:entityId="${user.id}"
            title="Удалить пользователя"></a>
     </div>
-
-
-
 
 </body>
 </html>

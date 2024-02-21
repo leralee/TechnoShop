@@ -6,6 +6,7 @@ import com.dns.common.entity.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import java.util.List;
  * @project TechnoShopProject
  */
 @Controller
+@Transactional
 public class CategoryController {
 
     final CategoryService service;
@@ -33,9 +35,14 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public String listFirstPage(Model model) {
-        List<Category> listCategories = service.listAll();
+    public String listFirstPage(@Param("sortDir") String sortDir, Model model) {
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
+        List<Category> listCategories = service.listAll(sortDir);
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
         model.addAttribute("listCategories", listCategories);
+        model.addAttribute("reverseSortDir", reverseSortDir);
         return "categories/categories";
 //        return listByPage(1, model, "name", "asc", null);
     }
@@ -113,17 +120,30 @@ public class CategoryController {
     }
 
     @GetMapping("categories/delete/{id}")
-    public String deleteUser(@PathVariable(name = "id") Integer id, Model model,
+    public String deleteUser(@PathVariable(name = "id") Integer id,
+                             Model model,
                              RedirectAttributes redirectAttributes) {
-//        try {
-//            service.delete(id);
-//            redirectAttributes.addFlashAttribute("message",
-//                    "Пользователь с ID: " + id + " удален");
-//        } catch (UserNotFoundException ex) {
-//            redirectAttributes.addFlashAttribute("message", ex.getMessage());
-//        }
+        try {
+            service.delete(id);
+            String categoryDir = "../category-images/" + id;
+            FileUploadedUtil.removeDir(categoryDir);
+            redirectAttributes.addFlashAttribute("message",
+                    "Категория с ID: " + id + " удалена");
+        } catch (CategoryNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+        }
         return "redirect:/categories";
 
     }
 
+
+    @GetMapping("/categories/{id}/enabled/{status}")
+    public String updateCategoryEnabledStatus(@PathVariable("id") Integer id, @PathVariable("status") boolean enabled,
+                                          RedirectAttributes redirectAttributes) {
+        service.updateCategoryEnabledStatus(id, enabled);
+        String status = enabled ? " включена" : " отключена";
+        String message = "Категория с  ID: " + id + status;
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/categories";
+    }
 }

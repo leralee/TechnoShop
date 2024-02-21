@@ -4,10 +4,9 @@ function clearFilter(){
 
 function showDeleteConfirmModal(link, entityName) {
     entityId = link.attr("entityId");
-
+    console.log(entityId)
     $("#yesButton").attr("href", link.attr("href"));
     $("#confirmText").text("Вы уверены что хотите удалить "
         + entityName + " с ID " + entityId + "?");
-    $("#confirmModal").modal();
-
+    $("#confirmModal").modal('show');
 }

@@ -44,8 +44,9 @@
                     <label class="col-sm-4 col-form-label">Фото:</label>
                     <div class="col-sm-8">
 <!--                        если в форме для изменения уже существует изображение для категории, тогда в контроллере-->
-<!--                        оно просто сохранистя не используя логику где fileImage и если не написать th:field="*{image}" -->
-<!--                        то поле для изображение останется пустым, что нарушает условие бд-->
+<!--                        оно просто сохранистя не используя логику где fileImage
+                            и если не написать th:field="*{image}" то в контроллер не передастся изображение
+                            , что нарушает условие бд-->
                         <input type="hidden" th:field="*{image}">
                         <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" class="mb-2"
                                style="display: flex; align-items: center" th:required="${category.image == null}">

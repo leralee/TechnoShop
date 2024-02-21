@@ -1,18 +1,19 @@
 package com.dns.admin.category;
 
+import com.dns.admin.FileUploadedUtil;
+import com.dns.admin.user.UserNotFoundException;
 import com.dns.common.entity.Category;
 import com.dns.common.entity.User;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author valeriali on {05.02.2024}
@@ -28,24 +29,32 @@ public class CategoryService {
         this.repo = repo;
     }
 
-    public List<Category> listAll() {
-//        return repo.findAll(Sort.by("name").ascending());
-        List<Category> rootCategories = repo.findRootCategories();
-        return listHierarchicalCategories(rootCategories);
+    public List<Category> listAll(String sortDir) {
+        Sort sort = Sort.by("name");
+
+        if (sortDir.equals("asc")) {
+            sort = sort.ascending();
+        } else if (sort.equals("desc")) {
+            sort = sort.descending();
+        }
+
+        List<Category> rootCategories = repo.findRootCategories(sort);
+        return listHierarchicalCategories(rootCategories, sortDir);
     }
 
-    private List<Category> listHierarchicalCategories(List<Category> rootCategories) {
+    private List<Category> listHierarchicalCategories(List<Category> rootCategories, String sortDir) {
         List<Category> hierarchicalCategories = new ArrayList<>();
         for (Category rootCategory : rootCategories) {
             hierarchicalCategories.add(Category.copyFull(rootCategory));
-            listSubHierarchicalCategories(hierarchicalCategories, rootCategory, 0);
+            listSubHierarchicalCategories(hierarchicalCategories, rootCategory, 0, sortDir);
         }
         return hierarchicalCategories;
     }
 
-    private void listSubHierarchicalCategories(List<Category> hierarchicalCategories, Category parent, int subLevel) {
+    private void listSubHierarchicalCategories(List<Category> hierarchicalCategories, Category parent, int subLevel,
+                                               String sortDir) {
         int newSubLevel = subLevel + 1;
-        Set<Category> children = parent.getChildren();
+        Set<Category> children = sortSubCategories(parent.getChildren(), sortDir);
 
         for (Category subCategory : children) {
             StringBuilder name = new StringBuilder();
@@ -54,7 +63,7 @@ public class CategoryService {
             }
             name.append(subCategory.getName());
             hierarchicalCategories.add(Category.copyFull(subCategory, String.valueOf(name)));
-            listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel);
+            listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel, sortDir);
         }
     }
 
@@ -79,7 +88,7 @@ public class CategoryService {
 
     public List<Category> listCategoriesUsedInForm() {
         List<Category> categoriesUsedInForm = new ArrayList<>();
-        List<Category> categoriesInDB = repo.findRootCategories();
+        List<Category> categoriesInDB = repo.findRootCategories(Sort.by("name").ascending());
 
         for (Category category : categoriesInDB) {
             categoriesUsedInForm.add(Category.copyIdAndName(category));
@@ -91,7 +100,7 @@ public class CategoryService {
 
     private void listSubCategoriesUsedInForm(List<Category> categoriesUsedInForm, Category parent, int subLevel) {
         int newSubLevel = subLevel + 1;
-        Set<Category> children = parent.getChildren();
+        Set<Category> children = sortSubCategories(parent.getChildren());
 
         for (Category subCategory : children) {
             StringBuilder name = new StringBuilder();
@@ -116,7 +125,7 @@ public class CategoryService {
     public String checkUnique(Integer id, String name, String alias) {
         boolean isCreatingNew = (id==null || id == 0);
         Category categoryByName = repo.findByName(name);
-
+        System.out.println("Problem");
         if (isCreatingNew) {
             if (categoryByName != null) {
                 return "DuplicateName";
@@ -136,5 +145,33 @@ public class CategoryService {
             }
         }
         return "OK";
+    }
+
+    private SortedSet<Category> sortSubCategories(Set<Category> children) {
+        return sortSubCategories(children, "asc");
+    }
+
+    private SortedSet<Category> sortSubCategories(Set<Category> children, String sortDir) {
+        SortedSet<Category> sortedChildren = new TreeSet<>((cat1, cat2) -> {
+            if (sortDir.equals("asc")) {
+                return cat1.getName().compareTo(cat2.getName());
+            } else {
+                return cat2.getName().compareTo(cat1.getName());
+            }
+        });
+        sortedChildren.addAll(children);
+        return sortedChildren;
+    }
+
+    public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
+        repo.updateEnabledStatus(id, enabled);
+    }
+
+    public void delete(Integer id) throws CategoryNotFoundException {
+        Long countById = repo.countById(id);
+        if (countById == null || countById == 0) {
+            throw new CategoryNotFoundException("Категория с ID: " + id + " не найдена");
+        }
+        repo.deleteById(id);
     }
 }

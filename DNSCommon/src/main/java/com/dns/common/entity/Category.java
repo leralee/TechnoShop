@@ -71,6 +71,7 @@ public class Category {
         copyCategory.setImage(category.getImage());
         copyCategory.setAlias(category.getAlias());
         copyCategory.setEnabled(category.isEnabled());
+        copyCategory.setHasChildren(!category.getChildren().isEmpty());
         return copyCategory;
     }
     public static Category copyFull(Category category, String name) {
@@ -137,7 +138,19 @@ public class Category {
 
     @Transient
     public String getImagePath() {
+        if (this.id == null) return "/images/image-thumbnail.png";
         return "/category-images/" + this.id + "/" + this.image;
+    }
+
+    @Transient
+    private boolean hasChildren;
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
+    }
+
+    public boolean isHasChildren() {
+        return hasChildren;
     }
 }
 

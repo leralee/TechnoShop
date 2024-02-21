@@ -5,12 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 @Component
@@ -39,13 +41,20 @@ public class FileUploadedUtil {
                         Files.delete(file);
                     } catch (IOException e) {
                         LOGGER.error("Не удалось удалить файл: " + file);
-                        System.out.println("Не удалось удалить файл: " + file);
                     }
                 }
             });
         } catch (IOException ex) {
             LOGGER.error("Не удалось вывести список каталогов: " + dirPath);
-            System.out.println("Не удалось вывести список каталогов: " + dirPath);
+        }
+    }
+
+    public static void removeDir(String dir)  {
+        cleanDir(dir);
+        try {
+            Files.delete(Paths.get(dir));
+        } catch (IOException e) {
+            LOGGER.error("Не удалось удалить директорию " + dir);
         }
     }
 
