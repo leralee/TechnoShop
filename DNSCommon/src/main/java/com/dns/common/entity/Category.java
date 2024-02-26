@@ -152,5 +152,13 @@ public class Category {
     public boolean isHasChildren() {
         return hasChildren;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", alias='" + alias;
+    }
 }
 

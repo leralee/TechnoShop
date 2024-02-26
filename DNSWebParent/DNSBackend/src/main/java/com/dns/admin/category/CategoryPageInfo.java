@@ -1,6 +1,23 @@
-package com.dns.admin.category;/**
-  *
-  * @project TechnoShopProject
-  * @author valeriali on {22.02.2024}
- */public class CategoryPageInfo {
+package com.dns.admin.category;
+
+
+public class CategoryPageInfo {
+    private int totalPages;
+    private long totalElements;
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public long getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
+    }
 }

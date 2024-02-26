@@ -1,45 +1,57 @@
 package com.dns.admin.category;
 
-import com.dns.admin.FileUploadedUtil;
-import com.dns.admin.user.UserNotFoundException;
 import com.dns.common.entity.Category;
-import com.dns.common.entity.User;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-/**
- * @author valeriali on {05.02.2024}
- * @project TechnoShopProject
- */
 @Service
 @Transactional
 public class CategoryService {
-    public static final int CATEGORIES_PER_PAGE = 4;
+    public static final int ROOT_CATEGORIES_PER_PAGE = 4;
     private final CategoryRepository repo;
 
     public CategoryService(CategoryRepository repo) {
         this.repo = repo;
     }
 
-    public List<Category> listAll(String sortDir) {
+    public List<Category> listByPage(CategoryPageInfo pageInfo, int pageNum, String sortDir, String keyword) {
         Sort sort = Sort.by("name");
 
         if (sortDir.equals("asc")) {
             sort = sort.ascending();
-        } else if (sort.equals("desc")) {
+        } else if (sortDir.equals("desc")) {
             sort = sort.descending();
         }
 
-        List<Category> rootCategories = repo.findRootCategories(sort);
-        return listHierarchicalCategories(rootCategories, sortDir);
+        Pageable pageable = PageRequest.of(pageNum - 1, ROOT_CATEGORIES_PER_PAGE, sort);
+        Page<Category> pageCategories = null;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            pageCategories = repo.search(keyword, pageable);
+        } else {
+            pageCategories = repo.findRootCategories(pageable);
+        }
+        List<Category> rootCategories = pageCategories.getContent();
+
+        pageInfo.setTotalElements(pageCategories.getTotalElements());
+        pageInfo.setTotalPages(pageCategories.getTotalPages());
+
+        if (keyword != null && !keyword.isEmpty()) {
+            List<Category> searchResult = pageCategories.getContent();
+            for (Category category : searchResult) {
+                category.setHasChildren(!category.getChildren().isEmpty());
+            }
+            return searchResult;
+        } else {
+            return listHierarchicalCategories(rootCategories, sortDir);
+        }
+
     }
 
     private List<Category> listHierarchicalCategories(List<Category> rootCategories, String sortDir) {
@@ -67,24 +79,9 @@ public class CategoryService {
         }
     }
 
-
-
-
-    public Page<Category> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNum - 1, CATEGORIES_PER_PAGE, sort);
-
-        if (keyword != null) {
-            return repo.findAll(keyword, pageable);
-        }
-        return repo.findAll(pageable);
-    }
-
     public Category save(Category category) {
         return repo.save(category);
     }
-
 
     public List<Category> listCategoriesUsedInForm() {
         List<Category> categoriesUsedInForm = new ArrayList<>();
@@ -113,7 +110,6 @@ public class CategoryService {
         }
     }
 
-
     public Category get(Integer id) throws CategoryNotFoundException {
         try {
             return repo.findById(id).get();
@@ -136,11 +132,11 @@ public class CategoryService {
                 }
             }
         } else {
-            if (categoryByName != null && categoryByName.getId() != id) {
+            if (categoryByName != null && !Objects.equals(categoryByName.getId(), id)) {
                 return "DuplicateName";
             }
             Category categoryByAlias = repo.findByAlias(alias);
-            if (categoryByAlias != null && categoryByAlias.getId() != id) {
+            if (categoryByAlias != null && !Objects.equals(categoryByAlias.getId(), id)) {
                 return "DuplicateAlias";
             }
         }

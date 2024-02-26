@@ -1,8 +1,13 @@
 package com.dns.admin.category;
 
 import com.dns.admin.FileUploadedUtil;
+import com.dns.admin.category.exporter.CategoryCsvExporter;
 import com.dns.admin.user.UserNotFoundException;
+import com.dns.admin.user.UserService;
+import com.dns.admin.user.export.UserCsvExporter;
 import com.dns.common.entity.Category;
+import com.dns.common.entity.User;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -20,10 +25,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author valeriali on {05.02.2024}
- * @project TechnoShopProject
- */
+
 @Controller
 @Transactional
 public class CategoryController {
@@ -35,30 +37,28 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public String listFirstPage(@Param("sortDir") String sortDir, Model model) {
-        if (sortDir == null || sortDir.isEmpty()) {
-            sortDir = "asc";
-        }
-        List<Category> listCategories = service.listAll(sortDir);
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("listCategories", listCategories);
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        return "categories/categories";
-//        return listByPage(1, model, "name", "asc", null);
+    public String listFirstPage(@RequestParam(value = "sortDir", required = false) String sortDir,
+                                Model model) {
+        return listByPage(1, null, sortDir, null, model);
     }
 
     @GetMapping("/categories/page/{pageNum}")
-    public String listByPage(@PathVariable("pageNum") int pageNum, Model model,
-                             @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
-                             @RequestParam("keyword") String keyword
-    ) {
-        Page<Category> page = service.listByPage(pageNum, sortField, sortDir, keyword);
-        List<Category> listCategories = page.getContent();
+    public String listByPage(@PathVariable("pageNum") int pageNum,
+                             @RequestParam(value = "sortField", required = false) String sortField,
+                             @RequestParam(value = "sortDir", required = true) String sortDir,
+                             @RequestParam(value = "keyword", required = false) String keyword,
+                             Model model) {
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
 
-        long startCount = (long) (pageNum - 1) * CategoryService.CATEGORIES_PER_PAGE + 1;
-        long endCount = startCount + CategoryService.CATEGORIES_PER_PAGE - 1;
-        if (endCount > page.getTotalElements()) {
-            endCount = page.getTotalElements();
+        CategoryPageInfo pageInfo = new CategoryPageInfo();
+        List<Category> listCategories = service.listByPage(pageInfo, pageNum, sortDir, keyword);
+
+        long startCount = (long) (pageNum - 1) * CategoryService.ROOT_CATEGORIES_PER_PAGE + 1;
+        long endCount = startCount + CategoryService.ROOT_CATEGORIES_PER_PAGE - 1;
+        if (endCount > pageInfo.getTotalElements()) {
+            endCount = pageInfo.getTotalElements();
         }
 
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
@@ -66,15 +66,45 @@ public class CategoryController {
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("startCount", startCount);
         model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", pageInfo.getTotalElements());
+        model.addAttribute("totalPages", pageInfo.getTotalPages());
         model.addAttribute("listCategories", listCategories);
-        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortField", "name");
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
         model.addAttribute("keyword", keyword);
+
         return "categories/categories";
     }
+
+//    @GetMapping("/categories/page/{pageNum}")
+//    public String listByPage(@PathVariable("pageNum") int pageNum, Model model,
+//                             @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
+//                             @RequestParam("keyword") String keyword
+//    ) {
+//        Page<Category> page = service.listByPage(pageNum, sortField, sortDir, keyword);
+//        List<Category> listCategories = page.getContent();
+//
+//        long startCount = (long) (pageNum - 1) * CategoryService.CATEGORIES_PER_PAGE + 1;
+//        long endCount = startCount + CategoryService.CATEGORIES_PER_PAGE - 1;
+//        if (endCount > page.getTotalElements()) {
+//            endCount = page.getTotalElements();
+//        }
+//
+//        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+//
+//        model.addAttribute("currentPage", pageNum);
+//        model.addAttribute("startCount", startCount);
+//        model.addAttribute("endCount", endCount);
+//        model.addAttribute("totalItems", page.getTotalElements());
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("listCategories", listCategories);
+//        model.addAttribute("sortField", sortField);
+//        model.addAttribute("sortDir", sortDir);
+//        model.addAttribute("reverseSortDir", reverseSortDir);
+//        model.addAttribute("keyword", keyword);
+//        return "categories/categories";
+//    }
 
     @GetMapping("categories/new")
     public String newCategory(Model model) {
@@ -136,7 +166,6 @@ public class CategoryController {
 
     }
 
-
     @GetMapping("/categories/{id}/enabled/{status}")
     public String updateCategoryEnabledStatus(@PathVariable("id") Integer id, @PathVariable("status") boolean enabled,
                                           RedirectAttributes redirectAttributes) {
@@ -145,5 +174,12 @@ public class CategoryController {
         String message = "Категория с  ID: " + id + status;
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/categories";
+    }
+
+    @GetMapping("/categories/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        List<Category> listCategories = service.listCategoriesUsedInForm();
+        CategoryCsvExporter exporter = new CategoryCsvExporter();
+        exporter.export(listCategories, response);
     }
 }

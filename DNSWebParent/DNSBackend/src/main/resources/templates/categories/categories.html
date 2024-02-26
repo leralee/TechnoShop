@@ -16,68 +16,37 @@
             <a th:href="@{/categories/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark me-2"></a>
         </div>
 
-        <div th:if="${message}" class="alert alert-success text-center">
-            [[${message}]]
-        </div>
-
-        <div>
-            <form th:action="@{/categories/page/1}" class="row g-12 m-3">
-                <input type="hidden" name="sortField" th:value="${sortField}"/>
-                <input type="hidden" name="sortDir" th:value="${sortDir}"/>
-                <div class="col-auto">
-                    <label for="search-input" class="col-form-label">Поиск</label>
-                </div>
-                <div class="col-auto">
-                    <input type="search" name="keyword" th:value="${keyword}" id="search-input" class="form-control" required/>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
-                <div class="col-auto p-0">
-                    <button type="button" class="btn btn-secondary" onclick="clearFilter()">
-                        <i class="fa-solid fa-eraser"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
+        <div th:replace="~{fragments :: search_form_and_message('/categories/page/1')}"></div>
 
         <div class="full-details">
             <table class="table table-bordered table-striped table-hover table-responsive-xl">
                 <thead class="table-dark">
                     <tr>
-                        <th class="hideable-column">
-                            <th th:replace="~{fragments :: column_link('id', 'ID', 'tag')}"></th>
-                        </th>
-                        <th>Фото</th>
-                        <th class="hideable-column">
-                            <th th:replace="~{fragments :: column_link('name', 'Название', 'tag')}"></th>
-                        </th>
-                        <th th:replace="~{fragments :: column_link('alias', 'Алиас', 'none')}"></th>
-                        <th th:replace="~{fragments :: column_link('enabled', 'Доступ', 'none')}"></th>
-                        <th>
-                        </th>
+                        <th>ID</th>
+                        <th>Изображение</th>
+                        <th th:replace="~{fragments :: column_link('/categories', 'name', 'Название категории', 'none')}"></th>
+                        <th class="hideable-column">Алиас</th>
+                        <th>Доступ</th>
+                        <th></th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr th:each="category: ${listCategories}">
-                        <td class="hideable-column">[[${category.id}]]</td>
+                        <td>[[${category.id}]]</td>
                         <td>
-    <!--                        <span th:if="${category.image == null}" class="fas fa-portrait fa-3x icon-silver"></span>-->
-    <!--                        <img alt="categoryImage" th:if="${category.image != null}" th:src="@{${user.getPhotosImagePath()}}"-->
-    <!--                             style="width: 100px"/>-->
                             <img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid">
                         </td>
-                        <td class="hideable-column">[[${category.name}]]</td>
-                        <td>[[${category.alias}]]</td>
-
+                        <td>[[${category.name}]]</td>
+                        <td class="hideable-column">[[${category.alias}]]</td>
                         <td>
-                            <div th:replace="~{fragments :: category_status}"></div>
+                            <div th:replace="~{fragments :: status(${category.enabled}, 'категорию', '/categories/' + ${category.id})}"></div>
+
                         </td>
                         <td>
-                            <div th:replace="~{fragments :: category_actions}"></div>
+                            <div th:replace="~{fragments :: edit('категорию', '/categories/edit/' + ${category.id})}"></div>
+                            &nbsp;
+                            <div th:replace="~{fragments :: delete('категорию', ${category.id}, '/categories/delete /' + ${category.id}, ${!category.hasChildren})}"></div>
                         </td>
                     </tr>
                 </tbody>
@@ -85,58 +54,33 @@
         </div>
 
         <div class="less-details">
-            <div th:each="user : ${listUsers}" class="row m-1">
+            <div th:each="category : ${listCategories}" class="row m-1">
                 <div class="col-4">
-                    <div th:replace="~{fragments :: user-photos}"></div>
+                    <img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid">
                 </div>
                 <div class="col-8">
-                    <div>[[${user.fullName}]]</div>
-                    <div>[[${user.roles}]]</div>
+                    <div>[[${category.name}]]</div>
                     <div class="mt-2">
-                        <div th:replace="~{fragments :: status(enabled, entityName, entityURL)}"></div>
+
+                        <div th:replace="~{fragments :: status(${category.enabled}, 'категорию', '/categories/' + ${category.id})}"></div>
                         &nbsp;
-                        <div th:replace="~{fragments :: edit}"></div>
+                        <div th:replace="~{fragments :: edit('категорию', '/categories/edit/' + ${category.id})}"></div>
                         &nbsp;
-                        <div th:replace="~{fragments :: delete}"></div>
+                        <div th:replace="~{fragments :: delete('категорию', ${category.id}, '/categories/delete /' + ${category.id}, ${!category.hasChildren})}"></div>
                     </div>
-                    <div>&nbsp;</div>
+
                 </div>
             </div>
         </div>
 
-        <div class="text-center m-1" th:if="${totalItems > 0}">
-            <span>Показаны пользователи # [[${startCount}]] до [[${endCount}]] из [[${totalItems}]]</span>
-        </div>
-        <div class="text-center m-1" th:unless="${totalItems > 0}">
-            <span>Пользователи не найдены</span>
-        </div>
-
-        <div th:if="${totalPages > 1}">
-            <nav>
-                <ul class="pagination justify-content-center flex-wrap" >
-                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="~{fragments :: page_link(${currentPage - 1}, '&laquo;')}"></a>
-                    </li>
-
-                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-                        th:each="i : ${#numbers.sequence(1, totalPages)}">
-                        <a th:replace="~{fragments :: page_link(${i}, ${i})}"></a>
-                    </li>
-                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="~{fragments :: page_link(${currentPage + 1}, '&raquo;')}"></a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-
+        <div th:replace="~{fragments :: pagination('/categories', 'Категории')}"></div>
         <div th:replace="~{modal_fragments :: confirm_modal}"></div>
         <div th:replace="~{fragments :: footer}"></div>
     </div>
 
     <script th:src="@{/js/common_list.js}"></script>
     <script type="text/javascript">
-        moduleURL = "[[@{/categories}]]"
+        moduleURL = "[[@{/categories}]]";
 
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {

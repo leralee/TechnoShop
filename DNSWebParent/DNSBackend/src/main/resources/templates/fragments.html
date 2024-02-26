@@ -23,9 +23,9 @@
         </div>
     </div>
 
-    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+    <th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
         <a class="text-white"
-           th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir='
+           th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir='
                                     + ${sortField != fieldName ? sortDir : reverseSortDir}
                                     + ${keyword != null ? '&keyword=' + keyword : ''}}">
             [[${columnLabel}]]
@@ -35,12 +35,6 @@
         </span>
     </th>
 
-    <a th:fragment="page_link(pageNum, label)" class="page-link"
-       th:href="@{'/users/page/' + ${pageNum}
-                       + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir}}">
-        <span aria-hidden="true">[[${label}]]</span>
-    </a>
-
     <div th:fragment="user-photos" th:remove="tag">
         <span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
         <img alt="userPhoto" th:if="${user.photos != null}" th:src="@{${user.getPhotosImagePath()}}"
@@ -48,50 +42,86 @@
     </div>
 
     <div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
-        <a th:if="${user.enabled == true}"
-           th:href="@{'/users/' + ${user.id} + '/enabled/false'}">
-            <i class="fa-solid fa-check-circle fa-2x icon-green"></i>
+        <a th:if="${enabled == true}" class="fa-solid fa-check-circle fa-2x icon-green"
+           th:href="@{${entityURL} + '/enabled/false'}"
+           th:title="'Отключить ' + ${entityName}">
         </a>
-        <a th:if="${user.enabled == false}"
-           th:href="@{'/users/' + ${user.id} + '/enabled/true'}">
-            <i class="fa-solid fa-circle fa-2x icon-dark"></i>
-        </a>
-    </div>
-
-    <div th:fragment="category_status" th:remove="tag">
-        <a th:if="${category.enabled == true}"
-           th:href="@{'/categories/' + ${category.id} + '/enabled/false'}">
-            <i class="fa-solid fa-check-circle fa-2x icon-green"></i>
-        </a>
-        <a th:if="${category.enabled == false}"
-           th:href="@{'/categories/' + ${category.id} + '/enabled/true'}">
-            <i class="fa-solid fa-circle fa-2x icon-dark"></i>
+        <a th:if="${enabled == false}" class="fa-solid fa-circle fa-2x icon-dark"
+           th:href="@{${entityURL} + '/enabled/true'}"
+           th:title="'Включить ' + ${entityName}">
         </a>
     </div>
 
-    <div th:fragment="category_actions" th:remove="tag">
-        <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/categories/edit/' + ${category.id}}"
-           title="Редактировать пользователя"></a>
+    <div th:fragment="edit(entityName, editURL)" th:remove="tag">
+        <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{${editURL}}"
+           th:title="'Редактировать ' + ${entityName}"></a>
+    </div>
         &nbsp;
-        <th:block th:if="${category.isHasChildren() == false}">
-        <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
-           th:href="@{'/categories/delete/' + ${category.id}}"
-           th:entityId="${category.id}"
-           title="Удалить пользователя"></a>
+    <div th:fragment="delete(entityName, entityId, deleteURL, visible)" th:remove="tag">
+        <th:block th:if="${visible}">
+        <a class="fa-solid fa-trash fa-2x icon-dark link-delete" th:href="@{${deleteURL}}"
+           th:entityId="${entityId}"
+           title="'Удалить ' + ${entityName}"></a>
         </th:block>
     </div>
 
-    <div th:fragment="edit" th:remove="tag">
-        <a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
-           title="Редактировать пользователя"></a>
+    <a th:fragment="page_link(moduleURL, pageNum, label)" class="page-link"
+       th:href="@{${moduleURL} + '/page/' + ${pageNum}
+                       + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        <span aria-hidden="true">[[${label}]]</span>
+    </a>
+
+    <div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Показаны [[${entityName}]] # [[${startCount}]] до [[${endCount}]] из [[${totalItems}]]</span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>[[${entityName}]] не найдены</span>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center flex-wrap" >
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${moduleURL}, ${currentPage - 1}, '&laquo;')}"></a>
+                    </li>
+
+                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="~{fragments :: page_link(${moduleURL}, ${i}, ${i})}"></a>
+                    </li>
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="~{fragments :: page_link(${moduleURL}, ${currentPage + 1}, '&raquo;')}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 
-    <div th:fragment="delete" th:remove="tag">
-        <a class="fa-solid fa-trash fa-2x icon-dark link-delete"
-           th:href="@{'/users/delete/' + ${user.id}}"
-           th:entityId="${user.id}"
-           title="Удалить пользователя"></a>
+    <div th:fragment="search_form_and_message(moduleURL)">
+        <form th:action="@{${moduleURL}}" class="row g-12 m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}"/>
+            <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+            <div class="col-auto">
+                <label for="search-input" class="col-form-label">Поиск</label>
+            </div>
+            <div class="col-auto">
+                <input type="search" name="keyword" th:value="${keyword}" id="search-input" class="form-control" required/>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <div class="col-auto p-0">
+                <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                    <i class="fa-solid fa-eraser"></i>
+                </button>
+            </div>
+        </form>
+        <div th:if="${message}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
     </div>
-
 </body>
 </html>

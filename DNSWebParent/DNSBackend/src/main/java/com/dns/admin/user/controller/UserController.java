@@ -43,8 +43,9 @@ public class UserController {
 
     @GetMapping("/users/page/{pageNum}")
     public String listByPage(@PathVariable("pageNum") int pageNum, Model model,
-                             @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
-                             @RequestParam("keyword") String keyword
+                             @RequestParam(value = "sortField", required = true) String sortField,
+                             @RequestParam(value = "sortDir", required = true) String sortDir,
+                             @RequestParam(value = "keyword", required = false) String keyword
                             ) {
         Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
         List<User> listUsers = page.getContent();
@@ -84,7 +85,6 @@ public class UserController {
     @PostMapping("/users/save")
     public String saveUser(User user, RedirectAttributes redirectAttributes,
                            @RequestParam("image") MultipartFile multipartFile) throws IOException {
-        System.out.println("USER save");
         if (!multipartFile.isEmpty()) {
             String originalFilename = multipartFile.getOriginalFilename();
             if (originalFilename == null) {
@@ -115,7 +115,6 @@ public class UserController {
     @GetMapping("users/edit/{id}")
     public String editUser(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("user get ID");
             User user = service.get(id);
             List<Role> listRoles = service.listRoles();
             model.addAttribute("user", user);
