@@ -11,8 +11,8 @@
     <div class="container-fluid">
         <div th:replace="~{navigation :: menu}"></div>
         <div>
-            <h2>Управление категориями</h2>
-            <a th:href="@{/categories/new}" class="fa-regular fa-folder-plus fa-2x icon-dark me-2"></a>
+            <h2>Панель управления категориями</h2>
+            <a th:href="@{/categories/new}" class="fa-solid fa-folder-plus fa-2x icon-dark me-2"></a>
             <a th:href="@{/categories/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark me-2"></a>
         </div>
 
@@ -46,7 +46,7 @@
                         <td>
                             <div th:replace="~{fragments :: edit('категорию', '/categories/edit/' + ${category.id})}"></div>
                             &nbsp;
-                            <div th:replace="~{fragments :: delete('категорию', ${category.id}, '/categories/delete /' + ${category.id}, ${!category.hasChildren})}"></div>
+                            <div th:replace="~{fragments :: delete('категорию', ${category.id}, '/categories/delete/' + ${category.id}, ${!category.hasChildren})}"></div>
                         </td>
                     </tr>
                 </tbody>

@@ -40,8 +40,7 @@ public class WebSecurityConfig{
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/**").hasAuthority("Админ")
-                        .requestMatchers("/categories/**").hasAnyAuthority("Админ", "Редактор")
-                        .requestMatchers("/brands/**").hasAnyAuthority("Админ", "Редактор")
+                        .requestMatchers("/categories/**", "/brands/**").hasAnyAuthority("Админ", "Редактор")
                         .requestMatchers("/products/**").hasAnyAuthority("Админ", "Продавец", "Редактор", "Отправитель")
                         .requestMatchers("/questions/**").hasAnyAuthority("Админ", "Ассистент")
                         .requestMatchers("/reviews/**").hasAnyAuthority("Админ", "Ассистент")

@@ -77,35 +77,6 @@ public class CategoryController {
         return "categories/categories";
     }
 
-//    @GetMapping("/categories/page/{pageNum}")
-//    public String listByPage(@PathVariable("pageNum") int pageNum, Model model,
-//                             @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
-//                             @RequestParam("keyword") String keyword
-//    ) {
-//        Page<Category> page = service.listByPage(pageNum, sortField, sortDir, keyword);
-//        List<Category> listCategories = page.getContent();
-//
-//        long startCount = (long) (pageNum - 1) * CategoryService.CATEGORIES_PER_PAGE + 1;
-//        long endCount = startCount + CategoryService.CATEGORIES_PER_PAGE - 1;
-//        if (endCount > page.getTotalElements()) {
-//            endCount = page.getTotalElements();
-//        }
-//
-//        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-//
-//        model.addAttribute("currentPage", pageNum);
-//        model.addAttribute("startCount", startCount);
-//        model.addAttribute("endCount", endCount);
-//        model.addAttribute("totalItems", page.getTotalElements());
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("listCategories", listCategories);
-//        model.addAttribute("sortField", sortField);
-//        model.addAttribute("sortDir", sortDir);
-//        model.addAttribute("reverseSortDir", reverseSortDir);
-//        model.addAttribute("keyword", keyword);
-//        return "categories/categories";
-//    }
-
     @GetMapping("categories/new")
     public String newCategory(Model model) {
         List<Category> listCategories = service.listCategoriesUsedInForm();
@@ -151,7 +122,6 @@ public class CategoryController {
 
     @GetMapping("categories/delete/{id}")
     public String deleteUser(@PathVariable(name = "id") Integer id,
-                             Model model,
                              RedirectAttributes redirectAttributes) {
         try {
             service.delete(id);

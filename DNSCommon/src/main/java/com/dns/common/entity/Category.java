@@ -155,10 +155,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", alias='" + alias;
+        return this.name;
     }
 }
 

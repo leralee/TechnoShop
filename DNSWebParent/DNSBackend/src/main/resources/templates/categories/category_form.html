@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:margin="http://www.w3.org/1999/xhtml">
-<head th:replace="fragments :: page_head(${pageTitle}, 'none')"></head>
+<head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}"></head>
 <body>
     <div class="container-fluid">
-        <div th:replace="navigation :: menu"></div>
+        <div th:replace="~{navigation :: menu}"></div>
         <div>
-            <h2>Управление категориями | [[${pageTitle}]]</h2>
+            <h2>Панель управления категориями | [[${pageTitle}]]</h2>
         </div>
 
         <form th:action="@{/categories/save}" method="post" style="max-width: 500px; margin: 0 auto"
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </form>
-        <div th:replace="modal_fragments :: modal_dialog"></div>
+        <div th:replace="~{modal_fragments :: modal_dialog}"></div>
         <div th:replace="~{fragments :: footer}"></div>
     </div>
     <script type="text/javascript">

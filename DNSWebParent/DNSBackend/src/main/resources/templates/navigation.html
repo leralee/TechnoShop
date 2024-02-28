@@ -19,12 +19,14 @@
                     <li class="nav-item" sec:authorize="hasAuthority('Админ')">
                         <a class="nav-link" th:href="@{/users}">Пользователи</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
-                        <a class="nav-link" th:href="@{/categories}">Категории</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
-                        <a class="nav-link" th:href="@{/brands}">Бренды</a>
-                    </li>
+                    <th:block sec:authorize="hasAnyAuthority('Админ', 'Редактор')">
+                        <li class="nav-item" >
+                            <a class="nav-link" th:href="@{/categories}">Категории</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands}">Бренды</a>
+                        </li>
+                    </th:block>
                     <li class="nav-item" sec:authorize="hasAnyAuthority('Админ', 'Продавец', 'Редактор', 'Отправитель')">
                         <a class="nav-link" th:href="@{/products}">Продукты</a>
                     </li>

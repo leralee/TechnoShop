@@ -1,71 +1,73 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments :: page_head(${pageTitle}, 'none')"></head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}"></head>
+
 <body>
-    <div th:replace="navigation :: menu"></div>
 
-            <!-- Page Content Holder -->
-    <div class="main-content">
-        <main>
-        <div style="max-width: 500px; margin: 0 auto">
+    <div class="container-fluid">
+        <div th:replace="~{navigation :: menu}"></div>
+        <div>
+            <h2>Панель управления брендами | [[${pageTitle}]]</h2>
+        </div>
 
-        <form th:action="@{/brands/save}" method="post"
-              onsubmit="return checkUnique(this)"
-              th:object="${brand}">
+        <form th:action="@{/brands/save}" method="post" style="max-width: 500px; margin: 0 auto"
+              enctype="multipart/form-data"
+              onsubmit="return checkBrandUnique(this)"
+              th:object="${brand}"  >
             <input type="hidden" th:field="*{id}"/>
             <div class="border border-secondary rounded p-3">
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Название бренда: </label>
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Имя бренда:</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{name}" required minlength="4" maxlength="32"/>
+                        <input type="text" class="form-control" th:field="*{name}" required minlength="1" maxlength="32" />
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Выберите категории: </label>
-                    <div class="col-sm-8">
+                    <label class="col-sm-4 col-form-label">Логотип бренда:</label>
+                    <div class="col-sm-8 mt-2">
+                        <input type="hidden" th:field="*{logo}">
+                        <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" class="mb-2"
+                               style="display: flex; align-items: center" th:required="${brand.logo == null}">
+                        <div class="mt-2">
+                            <img id="thumbnail" class="img-fluid" th:src="@{${brand.logoPath}}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Выберите одну или более категорий:</label>
+                    <div class="col-sm-8 mt-2">
                         <select class="form-control" th:field="*{categories}" multiple required
                                 style="resize: vertical; height: 200px">
-                            <th:block th:each="cat: ${listCategories}">
-                                <option th:value="${cat.id}">[[${cat.name}]]</option>
+                            <th:block th:each="category : ${listCategories}">
+                                <option th:value="${category.id}">[[${category.name}]]</option>
                             </th:block>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Выбранные категории: </label>
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Выбранные категории:</label>
                     <div class="col-sm-8">
                         <div id="chosenCategories">
-
                         </div>
-
                     </div>
                 </div>
 
-
-
                 <div class="text-center">
-                    <input type="submit" value="Сохранить" class="btn btn-violet"/>
-                    <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel"/>
-
+                    <input type="submit" value="Сохранить" class="btn btn-primary m-3" />
+                    <input type="button" value="Отменить" class="btn btn-secondary" id="buttonCancel" />
                 </div>
             </div>
-
-
         </form>
-
-        <div th:replace="modal_fragments :: modal_dialog"></div>
-
-        </div>
-        </main>
+        <div th:replace="~{modal_fragments :: modal_dialog}"></div>
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
     <script type="text/javascript">
-
-        moduleURL = "[[@{/brands}]]";
-
-        $(document).ready(function (){
+        moduleURL = "[[@{/brands}]]"
+        $(document).ready(function () {
             dropdownCategories = $("#categories");
             divChosenCategories = $("#chosenCategories");
 
@@ -73,41 +75,40 @@
                 divChosenCategories.empty();
                 showChosenCategories();
             });
+
+            showChosenCategories();
         });
 
         function showChosenCategories() {
-            dropdownCategories.children("option:selected").each(function (){
-
+            dropdownCategories.children("option:selected").each(function () {
                 selectedCategory = $(this);
                 catId = selectedCategory.val();
-                catName = selectedCategory.text();
+                catName = selectedCategory.text().replace(/-/g, "");
 
-                divChosenCategories.append("<span class='badge badge-secondary m-1'>" + catName + "</span>");
+                divChosenCategories.append("<span class='badge text-bg-secondary m-1'>" + catName + "</span>")
+
             });
         }
+        function checkBrandUnique(form) {
+            let url = "[[@{/brands/check_unique}]]";
+            let brandName = $("#name").val();
+            let brandId = $("#id").val();
+            let csrfValue = $("input[name='_csrf']").val();
+            let params = {id: brandId, name: brandName, _csrf: csrfValue};
 
-        function checkUnique(form) {
-
-            url = "[[@{/brands/check_unique}]]";
-            catId = $("#id").val();
-            catName = $("#name").val();
-
-            csrfValue = $("input[name='_csrf']").val();
-
-            params = {id: catId, name: catName, _csrf: csrfValue};
-
-            $.post(url, params, function (response){
-                if (response == "OK"){
+            $.post(url, params, function (response) {
+                if (response === "OK") {
                     form.submit();
-                } else if (response == "Duplicate") {
-                    showWarningModal("Уже сущесвует такая категория")
+                } else if (response === "Duplicated") {
+                    showWarningModal("Бренд с названием " + brandName + " существует");
                 }
-            }).fail(function (){
-                showErrorModal("Нет соедининения с сервером")
-            })
-
+            }).fail(function () {
+                showErrorModal("Не удалось подключить к серверу")
+            });
             return false;
         }
+
     </script>
+    <script th:src="@{/js/common_form.js}"></script>
 </body>
 </html>

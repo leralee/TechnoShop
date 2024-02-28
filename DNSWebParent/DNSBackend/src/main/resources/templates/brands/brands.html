@@ -1,89 +1,72 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments :: page_head('Бренд', 'none')"></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head th:replace="~{fragments :: page_head('Бренды', 'none')}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+    <title>Бренды - DNS Admin</title>
+</head>
 
 <body>
-    <div th:replace="navigation :: menu"></div>
+    <div class="container-fluid">
+        <div th:replace="~{navigation :: menu}"></div>
+        <div>
+            <h2>Панель управления брендами</h2>
+            <a th:href="@{/brands/new}" class="fa-solid fa-folder-plus fa-2x icon-dark me-2"></a>
+            <a th:href="@{/brands/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark me-2"></a>
+        </div>
 
-    <div class="main-content">
-        <main>
+        <div th:replace="~{fragments :: search_form_and_message('/brands/page/1')}"></div>
 
-        <a th:href="@{/brands/new}" class="fas fa-plus fa-2x icon-violet mr-2"></a>
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-responsive-xl">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID бренда</th>
+                        <th>Логотип</th>
+                        <th th:replace="~{fragments :: column_link('/brands', 'name', 'Название категории', 'none')}"></th>
+                        <th>Категории</th>
+                        <th></th>
+                    </tr>
+                </thead>
 
+                <tbody>
+                    <tr th:each="brand: ${listBrands}">
+                        <td>[[${brand.id}]]</td>
+                        <td>
+                            <img th:src="@{${brand.logoPath}}" style="width: 100px" class="img-fluid">
+                        </td>
+                        <td>[[${brand.name}]]</td>
+                        <td>
+                            <th:block th:each="brand : ${brand.categories}">
+                                <span class="badge text-bg-secondary" th:text="${brand.name}"></span>
+                            </th:block>
+                        </td>
+                        <td>
+                            <div th:replace="~{fragments :: edit('бренд', '/brands/edit/' + ${brand.id})}"></div>
+                            &nbsp;
+                            <div th:replace="~{fragments :: delete('бренд', ${brand.id}, '/brands/delete/' + ${brand.id}, true)}"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <div th:if="${message != null}" class="alert alert-success text-center">
-        [[${message}]]
+        <div th:replace="~{fragments :: pagination('/brands', 'Бренды')}"></div>
+        <div th:replace="~{modal_fragments :: confirm_modal}"></div>
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
 
-    <div>
-        <form th:action="@{/brands/}" class="form-inline m-3">
-            <div class="search-wrapper">
-                <span class="las la-search"></span>
-                <input type="search" name="keyword" th:value="${keyword}" placeholder="Поиск"  required/>
-                &nbsp;</div>
-            &nbsp;&nbsp;
-            <button type="submit" class="btn btn-violet">
-                <i class="fas fa-search"></i>
-            </button>
-            &nbsp;&nbsp;
-            <button type="button" class="btn border-secondary" onclick="clearFilter()">
-                <i class="fas fa-eraser"></i>
-            </button>
-        </form>
-    </div>
+    <script th:src="@{/js/common_list.js}"></script>
+    <script type="text/javascript">
+        moduleURL = "[[@{/brands}]]";
 
-    <div class="full-details">
-        <table class="table table-hover table-responsive-xl">
-            <thead class="thead-light">
-                <tr>
-                    <th>ID</th>
-                    <th>
-                    <a class="text-violet-ondark" th:href="@{'/brands?sortDir=' + ${reverseSortDir}}">Бренд</a>
-                    <span th:class="${reverseSortDir == 'desc'} ? 'fas fa-sort-up' : 'fas fa-sort-down'"></span>
-                    </th>
-                    <th>Категории</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="brand : ${listBrands}">
-                    <td>[[${brand.id}]]</td>
-                    <td>[[${brand.name}]]</td>
-                    <td>
-                        <th:block th:each="cat : ${brand.categories}">
-                            <span class="badge badge-secondary" th:text="${cat.name}"></span>
-                        </th:block>
-                    </td>
-                    <td>
-                        <a class="btn btn-violet" th:href="@{'/brands/edit/' + ${brand.id}}">Редактировать</a>
-                        &nbsp;
-                        <a class="btn btn-coral link-delete"
-                           th:href="@{'/brands/delete/' + ${brand.id}}" th:entityId="${brand.id}">Удалить
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div th:replace="modal_fragments :: confirm_modal"></div>
-        </main>
-    </div>
-
-
-
-<script th:src="@{/js/common_list.js}"></script>
-<script type="text/javascript">
-    moduleURL = "[[@{/brands}]]";
-
-    $(document).ready(function() {
-        $(".link-delete").on("click", function (e){
-            e.preventDefault();
-            showDeleteConfirmModal($(this), 'бренд');
+        $(document).ready(function () {
+            $(".link-delete").on("click", function (e) {
+                e.preventDefault();
+                showDeleteConfirmModal($(this), 'бренд')
+            });
         });
-    });
-</script>
-
+    </script>
 </body>
 </html>

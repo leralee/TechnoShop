@@ -54,7 +54,6 @@ public class CategoryServiceTests {
         String name = "abc";
         String alias = "Компьютеры";
 
-        Category category = new Category(id, name, alias);
         Mockito.when(repo.findByName(name)).thenReturn(null);
         Mockito.when(repo.findByAlias(alias)).thenReturn(null);
         String result = service.checkUnique(id, name, alias);
@@ -96,7 +95,6 @@ public class CategoryServiceTests {
         String name = "abc";
         String alias = "abc";
 
-        Category category = new Category(id, name, alias);
         Mockito.when(repo.findByName(name)).thenReturn(null);
         Mockito.when(repo.findByAlias(alias)).thenReturn(null);
         String result = service.checkUnique(id, name, alias);

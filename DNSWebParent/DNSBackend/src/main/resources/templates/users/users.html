@@ -12,8 +12,8 @@
     <div class="container-fluid">
         <div th:replace="~{navigation :: menu}"></div>
         <div>
-            <h2>Управление пользователями</h2>
-            <a th:href="@{/users/new}" class="fa-regular fa-user-plus fa-2x icon-dark me-2"></a>
+            <h2>Панель управления пользователями</h2>
+            <a th:href="@{/users/new}" class="fa-solid fa-user-plus fa-2x icon-dark me-2"></a>
             <a th:href="@{/users/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark me-2"></a>
             <a th:href="@{/users/export/excel}" class="fa-solid fa-file-excel fa-2x icon-dark me-2"></a>
             <a th:href="@{/users/export/pdf}" class="fa-solid fa-file-pdf fa-2x icon-dark"></a>
@@ -77,7 +77,7 @@
                         &nbsp;
                         <div th:replace="~{fragments :: edit('пользователя', '/users/edit/' + ${user.id})}"></div>
                         &nbsp;
-                        <div th:replace="~{fragments :: delete('пользователя', ${user.id}, '/users/delete /' + ${user.id}, true)}"></div>
+                        <div th:replace="~{fragments :: delete('пользователя', ${user.id}, '/users/delete/' + ${user.id}, true)}"></div>
                     </div>
                     <div>&nbsp;</div>
                 </div>

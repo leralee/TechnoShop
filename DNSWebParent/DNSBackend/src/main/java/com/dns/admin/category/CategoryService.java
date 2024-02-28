@@ -121,7 +121,6 @@ public class CategoryService {
     public String checkUnique(Integer id, String name, String alias) {
         boolean isCreatingNew = (id==null || id == 0);
         Category categoryByName = repo.findByName(name);
-        System.out.println("Problem");
         if (isCreatingNew) {
             if (categoryByName != null) {
                 return "DuplicateName";
