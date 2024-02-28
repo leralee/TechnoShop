@@ -17,23 +17,19 @@ public class MvcConfig implements WebMvcConfigurer {
         мы указываем dirName начиная с user-photos, тем самым абсолютный путь получается
         /Users/valeriali/IdeaProjects/TechnoShopProject/DNSWebParent/DNSBackend/user-photos
          */
-        String dirName = "user-photos";
-        Path userPhotosDir = Paths.get(dirName);
-        String userPhotosPath = userPhotosDir.toFile().getAbsolutePath();
-        registry.addResourceHandler("/" + dirName + "/**")
-                .addResourceLocations("file:" + userPhotosPath + "/");
+        exposeDirectory("user-photos", registry);
+        exposeDirectory("../category-images", registry);
+        exposeDirectory("../brand-logos", registry);
 
-        String categoryImagesDirName = "../category-images";
-        Path categoryImagesDir = Paths.get(categoryImagesDirName);
-        String categoryImagesPath = categoryImagesDir.toFile().getAbsolutePath();
-        registry.addResourceHandler("/category-images/**")
-                .addResourceLocations("file:" + categoryImagesPath + "/");
+    }
 
-        String brandLogoDirName = "../brand-logos";
-        Path brandLogosDir = Paths.get(brandLogoDirName);
-        String brandLogosPath = brandLogosDir.toFile().getAbsolutePath();
-        registry.addResourceHandler("/brand-logos/**")
-                .addResourceLocations("file:" + brandLogosPath + "/");
+    private void exposeDirectory(String pathPattern, ResourceHandlerRegistry registry) {
+        Path path = Paths.get(pathPattern);
+        String absolutePath = path.toFile().getAbsolutePath();
 
+        String logicalPath = pathPa ttern.replace("..", "") + "/**";
+
+        registry.addResourceHandler(logicalPath)
+                .addResourceLocations("file:" + absolutePath + "/");
     }
 }

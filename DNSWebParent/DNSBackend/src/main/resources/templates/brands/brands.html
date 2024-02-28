@@ -22,7 +22,7 @@
             <table class="table table-bordered table-striped table-hover table-responsive-xl">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID бренда</th>
+                        <th class="hideable-column">ID бренда</th>
                         <th>Логотип</th>
                         <th th:replace="~{fragments :: column_link('/brands', 'name', 'Название категории', 'none')}"></th>
                         <th>Категории</th>
@@ -32,7 +32,7 @@
 
                 <tbody>
                     <tr th:each="brand: ${listBrands}">
-                        <td>[[${brand.id}]]</td>
+                        <td class="hideable-column">[[${brand.id}]]</td>
                         <td>
                             <img th:src="@{${brand.logoPath}}" style="width: 100px" class="img-fluid">
                         </td>
@@ -50,6 +50,24 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="less-details">
+            <div th:each="brand : ${listBrands}" class="row m-1">
+                <div class="col-4">
+                    <img th:src="@{${brand.logoPath}}" style="width: 100px" class="img-fluid">
+                </div>
+                <div class="col-8">
+                    <div>[[${brand.name}]]</div>
+                    <div class="mt-2">
+                        &nbsp;
+                        <div th:replace="~{fragments :: edit('бренд', '/brands/edit/' + ${brand.id})}"></div>
+                        &nbsp;
+                        <div th:replace="~{fragments :: delete('бренд', ${brand.id}, '/brands/delete/' + ${brand.id}, true)}"></div>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
         <div th:replace="~{fragments :: pagination('/brands', 'Бренды')}"></div>

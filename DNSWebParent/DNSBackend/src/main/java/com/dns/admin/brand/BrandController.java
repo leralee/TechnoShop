@@ -1,6 +1,7 @@
 package com.dns.admin.brand;
 
 import com.dns.admin.FileUploadedUtil;
+import com.dns.admin.brand.exporter.BrandCsvExporter;
 import com.dns.admin.category.CategoryService;
 import com.dns.admin.category.exporter.CategoryCsvExporter;
 import com.dns.admin.user.UserService;
@@ -138,8 +139,8 @@ public class BrandController {
 
     @GetMapping("/brands/export/csv")
     public void exportToCSV(HttpServletResponse response) throws IOException {
-//        List<Category> listCategories = categoryService.listCategoriesUsedInForm();
-//        CategoryCsvExporter exporter = new CategoryCsvExporter();
-//        exporter.export(listCategories, response);
+        List<Brand> listBrands = brandService.listAll();
+        BrandCsvExporter exporter = new BrandCsvExporter();
+        exporter.export(listBrands, response);
     }
 }
