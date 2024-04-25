@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="page_head(title, remove)" th:remove="${remove}">
+<head th:fragment="page_head(title)">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
@@ -12,28 +12,31 @@
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/common.js}"></script>
-<!--    <script type="text/javascript" th:src="@{/js/common_form.js}"></script>-->
-<!--    <script type="text/javascript" th:src="@{/js/common_list.js}"></script>-->
 </head>
 <body>
     <div th:fragment="footer" class="text-center m-3">
         <p>DNS Control Panel - Copyright &copy; DNS</p>
-        <div>
-            <a href='https://pngtree.com/freepng/online-shopping-logo-desing_8918925.html' style="color: black">png image from pngtree.com/</a>
-        </div>
     </div>
 
-    <th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+    <th:block th:fragment="column_link(moduleURL, fieldName, columnLabel)">
         <a class="text-white"
            th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir='
                                     + ${sortField != fieldName ? sortDir : reverseSortDir}
-                                    + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                                    + ${keyword != null ? '&keyword=' + keyword : ''}
+                                    + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">
             [[${columnLabel}]]
         </a>
         <span th:if="${sortField == fieldName}"
               th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
         </span>
-    </th>
+    </th:block>
+
+    <a th:fragment="page_link(moduleURL, pageNum, label)" class="page-link"
+       th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir='
+       +${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}
+       +${categoryId != null ? '&categoryId=' + categoryId : ''}}">
+        <span aria-hidden="true">[[${label}]]</span>
+    </a>
 
     <div th:fragment="user-photos" th:remove="tag">
         <span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
@@ -64,12 +67,6 @@
            title="'Удалить ' + ${entityName}"></a>
         </th:block>
     </div>
-
-    <a th:fragment="page_link(moduleURL, pageNum, label)" class="page-link"
-       th:href="@{${moduleURL} + '/page/' + ${pageNum}
-                       + '?sortField=' + ${sortField} + '&sortDir=' +${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-        <span aria-hidden="true">[[${label}]]</span>
-    </a>
 
     <div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
         <div class="text-center m-1" th:if="${totalItems > 0}">
@@ -106,7 +103,7 @@
                 <label for="search-input" class="col-form-label">Поиск</label>
             </div>
             <div class="col-auto">
-                <input type="search" name="keyword" th:value="${keyword}" id="search-input" class="form-control" required/>
+                <input type="search" name="keyword" th:value="${keyword}" id="search-input" class="form-control"/>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">

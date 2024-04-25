@@ -68,7 +68,7 @@ public class BrandController {
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("listBrands", listBrands);
-        model.addAttribute("sortField", "name");
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
         model.addAttribute("keyword", keyword);
@@ -82,7 +82,7 @@ public class BrandController {
         List<Category> listCategories = categoryService.listCategoriesUsedInForm();
         model.addAttribute("brand", new Brand());
         model.addAttribute("listCategories", listCategories);
-        model.addAttribute("pageTitle", "Создание новой категории");
+        model.addAttribute("pageTitle", "Создание нового бренда");
         return "brands/brand_form";
     }
 

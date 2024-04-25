@@ -4,9 +4,8 @@
 <body>
 
 <div th:fragment="content" th:remove="tag">
-    <div>
-        <label>Описание</label>
-        <textarea class="form-control" th:field="*{description}" th:id="shortDescription" rows="5"></textarea>
+    <div class="mt-2">
+        <textarea th:field="*{shortDescription}" required></textarea>
     </div>
 </div>
 

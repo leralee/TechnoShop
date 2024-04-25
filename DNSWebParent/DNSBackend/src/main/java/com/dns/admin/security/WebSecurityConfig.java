@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 @Configuration
-public class WebSecurityConfig{
+public class  WebSecurityConfig{
     @Bean
     UserDetailsService userDetailsService() {
         return new DnsUserDetailsService();
@@ -41,7 +41,12 @@ public class WebSecurityConfig{
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/**").hasAuthority("Админ")
                         .requestMatchers("/categories/**", "/brands/**").hasAnyAuthority("Админ", "Редактор")
-                        .requestMatchers("/products/**").hasAnyAuthority("Админ", "Продавец", "Редактор", "Отправитель")
+                        .requestMatchers("/products/new", "products/delete/**").hasAnyAuthority("Админ", "Редактор")
+                        .requestMatchers("/products/edit/**", "/products/save", "/products/check_unique")
+                        .hasAnyAuthority("Админ", "Редактор", "Продавец")
+                        .requestMatchers("/products", "/products/", "/products/detail/**", "/products/page/**")
+                        .hasAnyAuthority("Админ", "Редактор", "Продавец", "Отправитель")
+                        .requestMatchers("/products/**").hasAnyAuthority("Админ", "Редактор")
                         .requestMatchers("/questions/**").hasAnyAuthority("Админ", "Ассистент")
                         .requestMatchers("/reviews/**").hasAnyAuthority("Админ", "Ассистент")
                         .requestMatchers("/customers/**").hasAnyAuthority("Админ", "Продавец")

@@ -7,10 +7,21 @@ a {
     text-decoration: none;
 }
 
+.richText a {
+    color: #333;
+}
+
+.readonly {
+    background-color: #e9ecef; /* Светло-серый цвет фона, часто используемый для неактивных элементов */
+    color: #495057; /* Темно-серый цвет текста для контраста */
+}
+
+
 @media screen and (max-width: 768px)  {
     /* small screen */
     div.full-details { display: none }
     div.less-details { display: block }
+
 
 }
 
@@ -19,6 +30,8 @@ a {
      div.full-details { display: block }
      div.less-details { display: none }
      .hideable-column { display: none }
+
+
 }
 
 @media screen and (min-width: 1024px) {

@@ -3,28 +3,36 @@
 <body>
 <div th:fragment="content" id="divProductDetails">
     <th:block th:each="detail, status : ${product.details}">
-        <div class="form-inline" th:id="'divDetail' + ${status.index}">
+        <div class="align-items-center row g-3 mb-2" th:id="'divDetail' + ${status.index}">
             <input type="hidden" name="detailIDs" th:value="${detail.id}"/>
-            <label class="m-3">Название: </label>
-            <input type="text" class="form-control w-25" name="detailNames"
-                   th:value="${detail.name}"/>
-            <label class="m-3">Значение: </label>
-            <input type="text" class="form-control w-25" name="detailValues"
-                   th:value="${detail.value}"/>
-            <a name="linkRemoveDetail" class="btn fas fa-times-circle fa-2x icon-grey float-right"
-               title="Удалить изображение"></a>
+
+            <label class="col-sm-1 col-form-label">Название: </label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" name="detailNames" maxlength="255" th:value="${detail.name}"/>
+            </div>
+            <label class="col-sm-1 col-form-label">Значение: </label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" name="detailValues" maxlength="255" th:value="${detail.value}"/>
+            </div>
+            <div class="col-sm-auto">
+                <a id="linkRemoveDetail" class="fas fa-times-circle fa-2x icon-dark"
+                   title="Удалить"></a>
+            </div>
+
         </div>
     </th:block>
 
-
-
-        <div class="form-inline" th:id="'divDetail' + ${#lists.size(product.details)}">
-            <input type="hidden" name="detailIDs" value="0"/>
-            <label class="m-3">Название: </label>
-            <input type="text" class="form-control w-25" name="detailNames"/>
-            <label class="m-3">Значение: </label>
-            <input type="text" class="form-control w-25" name="detailValues"/>
+    <div class="align-items-center row g-3 mb-2" th:id="'divDetail' + ${#lists.size(product.details)}">
+        <input type="hidden" name="detailIDs" value="0"/>
+        <label class="col-sm-1 col-form-label">Название: </label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="detailNames" maxlength="255"/>
         </div>
+        <label class="col-sm-1 col-form-label">Значение: </label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="detailValues" maxlength="255"/>
+        </div>
+    </div>
 
 </div>
 </body>

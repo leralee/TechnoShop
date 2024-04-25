@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}"></head>
+<head th:replace="~{fragments :: page_head(${pageTitle})}"></head>
 
 <body>
 
@@ -28,7 +28,8 @@
                     <label class="col-sm-4 col-form-label">Логотип бренда:</label>
                     <div class="col-sm-8 mt-2">
                         <input type="hidden" th:field="*{logo}">
-                        <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" class="mb-2"
+                        <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg"
+                               class="form-control mb-2"
                                style="display: flex; align-items: center" th:required="${brand.logo == null}">
                         <div class="mt-2">
                             <img id="thumbnail" class="img-fluid" th:src="@{${brand.logoPath}}">

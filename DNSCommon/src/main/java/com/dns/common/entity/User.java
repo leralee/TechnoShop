@@ -4,6 +4,7 @@ import com.dns.common.entity.Role;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -25,10 +26,10 @@ public class User {
     @Column(length = 64, nullable = false)
     private String password;
 
-    @Column(name = "first_name", length = 45, nullable = false)
+    @Column(length = 45, nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", length = 45, nullable = false)
+    @Column(length = 45, nullable = false)
     private String lastName;
 
     @Column(length = 64)
@@ -143,5 +144,14 @@ public class User {
     @Transient
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+
+    public boolean hasRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

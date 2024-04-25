@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="content" th:remove="tag">
+    <div class="col-form-label row">
+        Информация важна для расчета стоимости доставки товара.
+    </div>
+    <div class="col-form-label row">
+        <label class="col-sm-2 col-form-label">Длина (см): </label>
+        <div class="col-sm-10">
+            <input type="number" step="1" class="form-control" th:field="*{length}"/>
+        </div>
+    </div>
+    <div class="col-form-label row">
+        <label class="col-sm-2 col-form-label">Ширина (см): </label>
+        <div class="col-sm-10">
+            <input type="number" step="1" class="form-control" th:field="*{width}"/>
+        </div>
+    </div>
+    <div class="col-form-label row">
+        <label class="col-sm-2 col-form-label">Высота (см): </label>
+        <div class="col-sm-10">
+            <input type="number" step="1" class="form-control" th:field="*{height}"/>
+        </div>
+    </div>
+    <div class="col-form-label row">
+        <label class="col-sm-2 col-form-label">Вес (кг): </label>
+        <div class="col-sm-10">
+            <input type="number" step="1" class="form-control" th:field="*{weight}"/>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

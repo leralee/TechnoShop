@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("a[name='linkRemoveDetail']").each(function (index) {
+    $("a[id='linkRemoveDetail']").each(function (index) {
         $(this).click(function () {
             removeDetailSectionByIndex(index);
         })
@@ -10,14 +10,18 @@ function addNextDetailSection(){
     allDivDetails = $("[id^='divDetail']");
     divDetailsCount = allDivDetails.length;
 
-    htmlDetailSection = `
-        <div class="form-inline" id="divDetail${divDetailsCount}">
-            <input type="hidden" name="detailIDs" value="0"/>
-            <label class="m-3">Название: </label>
-            <input type="text" class="form-control w-25" name="detailNames"/>
-            <label class="m-3">Значение: </label>
-            <input type="text" class="form-control w-25" name="detailValues"/>
+    htmlDetailSection = `    
+        <div class="align-items-center row g-3 mb-2" id='divDetail${divDetailsCount}'>
+        <input type="hidden" name="detailIDs" value="0"/>
+        <label class="col-sm-1 col-form-label">Название: </label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="detailNames" maxlength="255"/>
         </div>
+        <label class="col-sm-1 col-form-label">Значение: </label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="detailValues" maxlength="255"/>
+        </div>
+    </div>
     `;
 
     $("#divProductDetails").append(htmlDetailSection);
@@ -26,11 +30,11 @@ function addNextDetailSection(){
     previousDivDetailID = previousDivDetailSection.attr("id");
 
     htmlLinkRemove = `
-        <a class="btn fas fa-times-circle fa-2x icon-grey"
-        href="javascript:removeDetailSectionById('${previousDivDetailID}')"
-        title="Удалить значение"></a>
+        <div class="col-sm-auto">
+                <a href="javascript:removeDetailSectionById('${previousDivDetailID}')" class="fas fa-times-circle fa-2x icon-dark"
+                   title="Удалить"></a>
+            </div>
     `;
-
 
     previousDivDetailSection.append(htmlLinkRemove);
 

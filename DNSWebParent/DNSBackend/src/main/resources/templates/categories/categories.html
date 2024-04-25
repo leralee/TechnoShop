@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       lang="en">
-<head th:replace="~{fragments :: page_head('Категории', 'none')}">
+<head th:replace="~{fragments :: page_head('Категории')}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
     <title>Категории - DNS Admin</title>
@@ -24,7 +24,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Изображение</th>
-                        <th th:replace="~{fragments :: column_link('/categories', 'name', 'Название категории', 'none')}"></th>
+                        <th th:insert="~{fragments :: column_link('/categories', 'name', 'Название категории')}"></th>
                         <th class="hideable-column">Алиас</th>
                         <th>Доступ</th>
                         <th></th>

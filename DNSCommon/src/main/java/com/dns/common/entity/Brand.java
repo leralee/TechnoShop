@@ -20,7 +20,7 @@ public class Brand {
     private String logo;
 
     @Column
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "brands_categories",
             joinColumns = @JoinColumn(name = "brand_id"),

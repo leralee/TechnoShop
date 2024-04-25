@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:margin="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}"></head>
+<head th:replace="~{fragments :: page_head(${pageTitle})}"></head>
 <body>
     <div class="container-fluid">
         <div th:replace="~{navigation :: menu}"></div>
@@ -48,7 +48,8 @@
                             и если не написать th:field="*{image}" то в контроллер не передастся изображение
                             , что нарушает условие бд-->
                         <input type="hidden" th:field="*{image}">
-                        <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" class="mb-2"
+                        <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg"
+                               class="form-control mb-2"
                                style="display: flex; align-items: center" th:required="${category.image == null}">
                         <div class="mt-2">
                             <img id="thumbnail" class="img-fluid" th:src="@{${category.imagePath}}">

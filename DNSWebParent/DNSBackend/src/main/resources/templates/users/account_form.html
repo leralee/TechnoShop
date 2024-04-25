@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head th:replace="~{fragments :: page_head('Профиль', 'none')}"></head>
+<head th:replace="~{fragments :: page_head('Профиль')}"></head>
 
 
 <body>
@@ -76,7 +76,7 @@
                 <label for="fileImage" class="col-sm-4 col-form-label">Фото:</label>
                 <div class="col-sm-8 mt-2">
                     <input type="hidden" th:field="*{photos}">
-                    <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg" class="mb-2">
+                    <input type="file" id="fileImage" name="image" accept="image/png, image/jpeg" class="form-control mb-2">
                     <img id="thumbnail" th:src="@{${user.getPhotosImagePath()}}" class="img-fluid">
                     
 

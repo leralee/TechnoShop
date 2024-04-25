@@ -1,12 +1,9 @@
 var extraImagesCount = 0;
-
-
-
 $(document).ready(function () {
     $("input[name='extraImage']").each(function (index) {
         extraImagesCount++;
 
-        $(this).change(function (){
+        $(this).change(function(){
             if (!checkFileSize(this)) {
                 return;
             }
@@ -14,8 +11,8 @@ $(document).ready(function () {
         });
     });
 
-    $("a[name='linkRemoveExtraImage']").each(function (index) {
-        $(this).click(function () {
+    $("a[id='linkRemoveExtraImage']").each(function (index) {
+        $(this).click(function() {
             removeExtraImage(index);
         })
     })
@@ -24,12 +21,15 @@ $(document).ready(function () {
 function showExtraImageThumbnail(fileInput, index){
     var file = fileInput.files[0];
 
+    // этот фрагмент кода ищет id с элементов imageName и присваивает ему value равное имени файла
+    // это нужно для когда изображение в контексте редактирования заменяется новым изображением, чтобы сохранилось
+    // в базе данных именно название нового изображение, а не старого
     fileName = file.name;
-
     imageNameHiddenField = $("#imageName" + index);
     if (imageNameHiddenField.length) {
         imageNameHiddenField.val(fileName);
     }
+
 
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -40,7 +40,6 @@ function showExtraImageThumbnail(fileInput, index){
     if (index >= extraImagesCount - 1) {
         addNextExtraImageSection(index + 1);
     }
-
 }
 
 //вызывает дополнительное окно для загрузки изображения
@@ -56,11 +55,10 @@ function addNextExtraImageSection(index){
                 <input type="file" name="extraImage" 
                 onchange="showExtraImageThumbnail(this, ${index})"
                 accept="image/png, image/jpeg"
-           
                        />
             </div>
     </div>
- 
+
     `;
 
     htmlLinkRemove = `
@@ -69,9 +67,10 @@ function addNextExtraImageSection(index){
         title="Удалить изображение"></a>
 `;
 
-
     $("#divProductImages").append(htmlExtraImage);
+
     $("#extraImageHeader" + (index - 1)).append(htmlLinkRemove);
+
     extraImagesCount++;
 
 }
