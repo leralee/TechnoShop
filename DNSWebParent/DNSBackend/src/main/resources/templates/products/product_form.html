@@ -34,6 +34,34 @@
                     </li>
                 </ul>
 
+<!--                1.	Overview (Обзор)-->
+<!--                •	ID вкладки: overview-->
+<!--                •	Содержимое: Загружается из шаблона product_overview.-->
+<!--                •	Описание: Предоставляет общий обзор продукта.-->
+<!--                2.	Description (Описание)-->
+<!--                •	ID вкладки: description-->
+<!--                •	Разрешения:-->
+<!--                •	Продавец: Только для чтения, загрузка из product_description_read_only.-->
+<!--                •	Админ, Редактор: Полный доступ, загрузка из product_description.-->
+<!--                •	Описание: Показывает описание продукта. Различное содержимое в зависимости от роли пользователя.-->
+<!--                3.	Images (Изображения)-->
+<!--                •	ID вкладки: images-->
+<!--                •	Разрешения:-->
+<!--                •	Продавец: Только для чтения, загрузка из product_images_read_only.-->
+<!--                •	Админ, Редактор: Полный доступ, загрузка из product_images.-->
+<!--                •	Описание: Отображает изображения продукта. Доступ к функциям управления изображениями ограничен ролями.-->
+<!--                4.	Details (Детали)-->
+<!--                •	ID вкладки: details-->
+<!--                •	Разрешения:-->
+<!--                •	Продавец: Только для чтения, загрузка из product_details_read_only.-->
+<!--                •	Админ, Редактор: Полный доступ, загрузка из product_details. Включает кнопку для добавления новых деталей.-->
+<!--                •	Описание: Содержит подробные характеристики и информацию о продукте. Админы и редакторы могут добавлять новые детали.-->
+<!--                5.	Shipping (Доставка)-->
+<!--                •	ID вкладки: shipping-->
+<!--                •	Разрешения:-->
+<!--                •	Продавец: Только для чтения, загрузка из product_shipping_read_only.-->
+<!--                •	Админ, Редактор: Полный доступ, загрузка из product_shipping.-->
+<!--                •	Описание: Включает информацию о способах и условиях доставки продукта.-->
                 <div class="tab-content">
                     <div class="tab-pane active p-3" id="overview" role="tabpanel">
                         <div th:replace="~{products/product_overview :: content}"> </div>
@@ -88,7 +116,7 @@
         moduleURL = "[[@{/products}]]";
         brandModuleURL = "[[@{/brands}]]";
         defaultImageThumbnailSrc = "[[@{/images/image-thumbnail.png}]]";
-        checkUniqueURL = "[[@{/products/check_unique}]]";
+        checkUniqueUrl = "[[@{/products/check_unique}]]";
     </script>
     <script th:src="@{/js/common_form.js}"></script>
     <script th:src="@{/js/product_form_overview.js}"></script>

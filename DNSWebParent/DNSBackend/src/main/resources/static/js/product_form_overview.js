@@ -33,18 +33,18 @@ function getCategories(){
 }
 
 function checkUnique(form) {
-    productId = $("#id").val();
-    productName = $("#name").val();
+    let productId = $("#id").val();
+    let productName = $("#name").val();
 
-    csrfValue = $("input[name='_csrf']").val();
+    let csrfValue = $("input[name='_csrf']").val();
 
 
-    params = {id: productId, name: productName, _csrf: csrfValue};
+    let params = {id: productId, name: productName, _csrf: csrfValue};
 
     $.post(checkUniqueUrl, params, function (response){
-        if (response == "OK") {
+        if (response === "OK") {
             form.submit();
-        } else if (response == "Duplicate") {
+        } else if (response === "Duplicated") {
             showWarningModal("Продукт с названием " + productName + " уже существует");
         } else {
             showErrorModal("Неизвестный ответ с сервера");

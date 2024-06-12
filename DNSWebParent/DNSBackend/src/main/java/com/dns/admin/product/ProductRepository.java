@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends ListCrudRepository<Product, Integer>, PagingAndSortingRepository<Product, Integer> {
 
     Product findByName(String name);
+
     @Query("Update Product p Set p.enabled = (:enabled) where p.id=(:id)")
     @Modifying
     void updateEnabledStatus(Integer id, boolean enabled);

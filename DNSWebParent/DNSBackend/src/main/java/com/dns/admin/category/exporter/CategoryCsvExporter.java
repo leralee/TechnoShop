@@ -3,7 +3,6 @@ package com.dns.admin.category.exporter;
 
 import com.dns.admin.user.export.AbstractExporter;
 import com.dns.common.entity.Category;
-import com.dns.common.entity.User;
 import jakarta.servlet.http.HttpServletResponse;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;

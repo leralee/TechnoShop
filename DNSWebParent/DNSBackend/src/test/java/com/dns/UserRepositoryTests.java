@@ -1,7 +1,8 @@
-package com.dns.admin.user;
+package com.dns;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.dns.admin.user.UserRepository;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
 import org.junit.jupiter.api.Test;

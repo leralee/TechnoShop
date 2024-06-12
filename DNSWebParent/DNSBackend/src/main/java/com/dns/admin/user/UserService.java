@@ -1,8 +1,5 @@
 package com.dns.admin.user;
 
-import com.dns.admin.user.RoleRepository;
-import com.dns.admin.user.UserNotFoundException;
-import com.dns.admin.user.UserRepository;
 import com.dns.common.entity.Role;
 import com.dns.common.entity.User;
 

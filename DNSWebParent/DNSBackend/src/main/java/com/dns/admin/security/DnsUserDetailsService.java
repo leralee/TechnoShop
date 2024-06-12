@@ -7,14 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-/**
- * @author valeriali on {15.12.2023}
- * @project TechnoShopProject
- */
 public class DnsUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepo;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

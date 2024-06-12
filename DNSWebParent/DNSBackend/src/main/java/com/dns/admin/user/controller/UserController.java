@@ -78,7 +78,7 @@ public class UserController {
         user.setEnabled(true);
         model.addAttribute("user", user);
         model.addAttribute("listRoles", listRoles);
-        model.addAttribute("pageTitle", "Создание нового пользователя");
+        model.addAttribute("pageTitle", "Создание нового пользователя!!");
         return "users/user_form";
     }
 

@@ -1,4 +1,4 @@
-package com.dns.admin.user;
+package com.dns;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

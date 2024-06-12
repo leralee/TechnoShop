@@ -1,11 +1,6 @@
 package com.dns.admin.brand;
 
-import com.dns.admin.category.CategoryNotFoundException;
-import com.dns.admin.category.CategoryPageInfo;
-import com.dns.admin.category.CategoryRepository;
 import com.dns.common.entity.Brand;
-import com.dns.common.entity.Category;
-import com.dns.common.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

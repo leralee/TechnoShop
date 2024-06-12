@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="~{fragments :: page_head('DNS')}">
+    <meta/>
 </head>
 <body>
-<h1>E-commerce</h1>
+    <div class="container-fluid">
+        <div th:replace="~{navigation :: header_menu}"></div>
 
+        <div class="row row-cols-2 row-cols-md-4 g-4 pt-4">
+            <div class="col" th:each="cat : ${listCategories}">
+                <div style="height: 150px; display: flex; justify-content: center; align-items: center; flex-direction: column ">
+                    <img th:src="@{${cat.imagePath}}" style="height: 80px; width: auto; margin: auto" th:alt="${cat.name}">
+                    <div class="card-body">
+                        <a th:href="@{'/c/'+${cat.alias}}" style="text-decoration: none; color: inherit;">
+                            <h5 class="card-title">[[${cat.name}]]</h5>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        <img src="/DNS/category-images/1/Снимок экрана 2024-02-22 в 15.03.37.png" style="height: 80px; width: auto;">-->
+
+
+        <div th:replace="~{navigation :: footer_menu}"></div>
+    </div>
 </body>
 </html>

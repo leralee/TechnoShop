@@ -11,14 +11,14 @@
                    class="form-control"
                    th:readonly="${#authorization.expression('hasAuthority(''Продавец'')')}"
                    th:classappend="${#authorization.expression('hasAuthority(''Продавец'')')} ? 'readonly'"
-                   required minlength="3" maxlength="32"/>
+                   required minlength="3" maxlength="256"/>
         </div>
     </div>
 
     <div class="col-form-label row">
         <label class="col-sm-2 col-form-label">Алиас: </label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" th:field="*{alias}" minlength="3" maxlength="32"
+            <input type="text" class="form-control" th:field="*{alias}" minlength="3" maxlength="256"
                    placeholder="По умолчанию название продукта (пробелы заменены нижними подчеркиваниями)"
                    th:readonly="${#authorization.expression('hasAuthority(''Продавец'')')}"
                    th:classappend="${#authorization.expression('hasAuthority(''Продавец'')')} ? 'readonly'"/>
