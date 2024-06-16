@@ -1,6 +1,7 @@
 package com.dns.admin.category;
 
 import com.dns.common.entity.Category;
+import com.dns.common.exception.CategoryNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

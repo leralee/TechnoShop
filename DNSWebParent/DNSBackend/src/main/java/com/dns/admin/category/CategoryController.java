@@ -3,6 +3,7 @@ package com.dns.admin.category;
 import com.dns.admin.FileUploadedUtil;
 import com.dns.admin.category.exporter.CategoryCsvExporter;
 import com.dns.common.entity.Category;
+import com.dns.common.exception.CategoryNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,7 @@
 package com.dns.product;
 
 import com.dns.common.entity.Product;
+import com.dns.common.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,5 +30,13 @@ public class ProductService {
         Pageable pageable = PageRequest.of(pageNum - 1, PRODUCTS_PER_PAGE);
 
         return repo.listByCategory(categoryId, categoryIdMatch, pageable);
+    }
+
+    public Product getProduct(String alias) throws ProductNotFoundException {
+        Product product = repo.findByAlias(alias);
+        if (product == null) {
+            throw new ProductNotFoundException("Товар с алиасом: " + alias + " не найден");
+        }
+        return product;
     }
 }

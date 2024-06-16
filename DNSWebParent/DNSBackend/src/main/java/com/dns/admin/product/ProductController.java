@@ -7,7 +7,7 @@ import com.dns.admin.security.DnsUserDetails;
 import com.dns.common.entity.Brand;
 import com.dns.common.entity.Category;
 import com.dns.common.entity.Product;
-import jakarta.servlet.http.HttpServletResponse;
+import com.dns.common.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

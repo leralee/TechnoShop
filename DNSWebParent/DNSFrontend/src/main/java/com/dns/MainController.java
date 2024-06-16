@@ -1,9 +1,7 @@
 package com.dns;
 
-import com.dns.category.CategoryRepository;
 import com.dns.category.CategoryService;
 import com.dns.common.entity.Category;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

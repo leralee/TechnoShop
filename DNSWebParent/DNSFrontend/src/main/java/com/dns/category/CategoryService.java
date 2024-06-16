@@ -1,6 +1,7 @@
 package com.dns.category;
 
 import com.dns.common.entity.Category;
+import com.dns.common.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,12 @@ public class CategoryService {
         return listNoChildrenCategories;
     }
 
-    public Category getCategory(String alias) {
-        return repo.findByAliasAndEnabledTrue(alias);
+    public Category getCategory(String alias) throws CategoryNotFoundException {
+        Category category = repo.findByAliasAndEnabledTrue(alias);
+        if (category == null) {
+            throw new CategoryNotFoundException("Категория с алиасом: " + alias + " не найдена");
+        }
+        return category;
     }
 
     public List<Category> getCategoryParent(Category child) {

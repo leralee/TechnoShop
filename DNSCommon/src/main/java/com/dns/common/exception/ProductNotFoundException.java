@@ -1,4 +1,4 @@
-package com.dns.admin.product;
+package com.dns.common.exception;
 
 public class ProductNotFoundException extends Exception {
     public ProductNotFoundException(String message) {

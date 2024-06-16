@@ -1,0 +1,67 @@
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="~{fragments :: page_head(${pageTitle})}">
+    <meta/>
+</head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{navigation :: header_menu}"></div>
+    <th:block th:insert="~{breadcrumb :: content}"></th:block>
+    <div class="row">
+        <div class="col-sm">
+            <div>
+                <img th:src="@{${product.mainImagePath}}" class="img-fluid"/>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div>
+                <h2>[[${product.name}]]</h2>
+            </div>
+            <div>
+                <span>Бренд: [[${product.brand.name}]]</span>
+            </div>
+            <div>
+                <span th:if="${product.discountPercent <= 0}">&#8381; [[${product.price}]]</span>
+                <del th:if="${product.discountPercent > 0}"><span>&#8381; [[${product.price}]]</span></del>
+            </div>
+            <div th:if="${product.discountPercent > 0}">
+                Цена:
+                <span style="font-size: larger; color: darkred">&#8381; [[${product.discountPrice}]]</span>
+                ([[${product.discountPercent}]]%)
+            </div>
+            <div>&nbsp;</div>
+            <div th:utext="${product.shortDescription}"></div>
+        </div>
+        <div class="col-sm-2">
+            <div>
+                <span th:if="@{${product.inStock}}" class="text-success">В наличии</span>
+                <span th:unless="@{${product.inStock}}" class="text-danger">Нет в наличии</span>
+            </div>
+            <div class="mt-2">
+                <input type="text" size="5" value="1"/>
+            </div>
+            <div class="mt-3">
+                <input type="button" value="В корзину"class="btn btn-primary"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div><hr/></div>
+            <div>
+                <h3>Характеристики:</h3>
+            </div>
+            <th:block th:each="detail : ${product.details}">
+                <div>
+                    <b>[[${detail.name}]]</b>:
+                    <span>[[${detail.value}]]</span>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+    <div th:replace="~{navigation :: footer_menu}"></div>
+</div>
+</body>
+</html>
