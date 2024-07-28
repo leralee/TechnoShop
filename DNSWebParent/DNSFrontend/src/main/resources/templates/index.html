@@ -6,6 +6,7 @@
 <body>
     <div class="container-fluid">
         <div th:replace="~{navigation :: header_menu}"></div>
+        <div th:replace="~{navigation :: search_nav}"></div>
 
         <div class="row row-cols-2 row-cols-md-4 g-4 pt-4">
             <div class="col" th:each="cat : ${listCategories}">
@@ -19,10 +20,6 @@
                 </div>
             </div>
         </div>
-
-<!--        <img src="/DNS/category-images/1/Снимок экрана 2024-02-22 в 15.03.37.png" style="height: 80px; width: auto;">-->
-
-
         <div th:replace="~{navigation :: footer_menu}"></div>
     </div>
 </body>
