@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 
 /**
- * @author valeriali on {21.01.2024}
+ * @author valeriali
  * @project TechnoShopProject
  */
 

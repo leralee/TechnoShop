@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author valeriali on {16.06.2024}
+ * @author valeriali
  * @project TechnoShopProject
  */
 

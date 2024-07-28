@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author valeriali on {18.11.2023}
+ * @author valeriali
  * @project TechnoShopProject
  */
 public class UserPdfExporter extends AbstractExporter {

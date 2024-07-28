@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 /**
- * @author valeriali on {29.08.2023}
+ * @author valeriali
  * @project TechnoShopProject
  */
 

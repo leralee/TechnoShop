@@ -8,7 +8,7 @@
     <div th:replace="~{navigation :: header_menu}"></div>
     <th:block th:insert="~{breadcrumb :: content}"></th:block>
     <div class="row">
-        <div class="col-sm">
+        <div class="col-sm-2">
             <div>
                 <img id="bigImage" th:src="@{${product.mainImagePath}}" style="height: 400px" index="0" alt="mainImagePath"/>
             </div>
@@ -23,7 +23,7 @@
                 </th:block>
             </div>
         </div>
-        <div class="col-sm">
+        <div class="col-sm-3">
             <div>
                 <h2>[[${product.name}]]</h2>
             </div>

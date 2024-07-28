@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 /**
- * @author valeriali on {25.08.2023}
+ * @author valeriali
  * @project TechnoShopProject
  */
 @Controller

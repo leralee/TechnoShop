@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * @author valeriali on {01.09.2023}
+ * @author valeriali
  * @project TechnoShopProject
  */
 
